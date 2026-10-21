@@ -73,7 +73,7 @@ footer{padding:30px 18px 44px;text-align:center;color:var(--soft);font-size:13px
 footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 
 .hero{position:relative;overflow:hidden}
-.hero::before{content:"";position:absolute;inset:0;background:url('images/bg-winter.jpg') center/cover no-repeat;opacity:.5;z-index:0}
+.hero::before{content:"";position:absolute;inset:0;background:url('images/bg-winter.jpg?v=8') center/cover no-repeat;opacity:.5;z-index:0}
 .hero>*{position:relative;z-index:1}
 .carousel{position:relative;width:min(600px,92vw);margin:0 auto;border-radius:24px;overflow:hidden;border:6px solid #fff;box-shadow:0 10px 30px rgba(199,78,114,.25);background:#fdf3f5}
 .carousel .track{display:flex;transition:transform .55s ease}
@@ -86,10 +86,31 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 .dots{position:absolute;right:14px;bottom:14px;display:flex;gap:6px;z-index:2}
 .dots button{width:9px;height:9px;border-radius:50%;border:none;background:rgba(255,255,255,.65);cursor:pointer;padding:0}
 .dots button.on{background:var(--pink-deep)}
+
+.pdp-overlay{position:fixed;inset:0;background:rgba(60,40,50,.55);z-index:55;display:none;align-items:center;justify-content:center;padding:16px}
+.pdp-overlay.open{display:flex}
+.pdp{background:#fff;border-radius:20px;max-width:880px;width:100%;max-height:92vh;overflow:auto;position:relative;padding:22px;box-shadow:0 24px 60px rgba(120,50,80,.35)}
+.pdp-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:700px){.pdp-grid{grid-template-columns:1fr}}
+.pdp-main{width:100%;border-radius:16px;aspect-ratio:1/1;object-fit:cover;background:#fdf3f5}
+.pdp-thumbs{display:flex;gap:8px;margin-top:8px}
+.pdp-thumbs button{border:2px solid transparent;border-radius:10px;padding:0;background:none;cursor:pointer;width:64px;height:64px;overflow:hidden}
+.pdp-thumbs button.on{border-color:var(--pink-deep)}
+.pdp-thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.pdp h3{font-size:22px;margin:2px 0 6px}
+.pdp .pdp-price{font-size:20px;font-weight:800;color:var(--pink-deep)}
+.pdp .pdp-meta{color:var(--soft);font-size:14px;margin:6px 0 12px}
+.pdp ul{margin:0 0 16px;padding-left:18px;color:var(--soft);font-size:14px;line-height:1.55}
+.pdp-qty{display:inline-flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:999px;padding:5px 12px;margin-right:10px;vertical-align:middle}
+.pdp-qty button{border:none;background:none;font-size:18px;font-weight:800;color:var(--pink-deep);cursor:pointer;width:22px}
+.pdp-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:none;background:#fdf0f3;color:var(--pink-deep);font-size:17px;cursor:pointer;z-index:2}
+.pdp .addbtn{width:auto;padding:12px 26px;display:inline-block;vertical-align:middle}
+.card h4,#hero-pick h3{cursor:pointer}
+.viewbtn{display:block;margin:8px auto 2px;background:none;border:none;color:var(--pink-deep);font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline}
 </style></head><body>
 <div class="bar">🎉 Opening soon — <b>Free delivery over <span id="thresh">£35</span></b> in the UK, Ireland &amp; Europe · New drops every Friday!</div>
 <header><div class="logo"><img src="images/logo-badge.png" alt="Cuppa Panda logo">Cuppa<span>Panda</span></div><nav><a href="#best">Bestsellers</a><a href="#merch">Merch</a><a href="#hero-pick">Journal Kit</a><a href="#blindbox">Blind Box</a><a href="#treats">Little Treats</a></nav><div class="curry"><button data-cur="GBP" class="on">£ GBP</button><button data-cur="EUR">€ EUR</button><button data-cur="USD">$ USD</button></div><button class="cartbtn" id="cartBtn" type="button">🛒 Cart (<span id="cartCount">0</span>)</button></header>
-<div class="hero"><div class="carousel" id="heroCarousel"><div class="track"><a class="slide" href="#best"><img src="images/hero-panda-in-cup.jpg" alt="Fluffy panda plush sitting in a pink coffee cup"><span class="cap">Cuppa Panda 🐼</span></a><a class="slide" href="#hero-pick"><img src="images/A-journal-kit-1.jpg" alt="DIY Journal Kit"><span class="cap">DIY Journal Kit · <span class="p" data-usd="18.99">$18.99</span></span></a><a class="slide" href="#best"><img src="images/B-panda-plush-bag-charm-1.jpg" alt="Panda Plush Bag Charm — 15cm"><span class="cap">Panda Plush Bag Charm · <span class="p" data-usd="9.99">$9.99</span></span></a><a class="slide" href="#merch"><img src="images/merch-hoodie-pink.jpg" alt="Cuppa Panda Hoodie — Pink"><span class="cap">Cuppa Panda Hoodie · <span class="p" data-usd="44.99">$44.99</span></span></a><a class="slide" href="#blindbox"><img src="images/C-capybara-blind-box-1.jpg" alt="Capybara Blind Box Figure"><span class="cap">Capybara Blind Box · <span class="p" data-usd="6.49">$6.49</span></span></a><a class="slide" href="#merch"><img src="images/catalog-models-backpack.jpg" alt="Cuppa Panda Backpack — Pink"><span class="cap">Cuppa Panda Backpack · <span class="p" data-usd="47.99">$47.99</span></span></a></div><button class="carbtn prev" type="button" aria-label="Previous slide">‹</button><button class="carbtn next" type="button" aria-label="Next slide">›</button><div class="dots"></div></div><h1>Cute things for your <em>desk</em> &amp; your <em>bag</em></h1><p>Stationery, bag charms and blind boxes — hand-picked by a 14-year-old, for girls who love cute. Now shipping to the UK, Ireland &amp; Europe!</p><a class="btn" href="#best">Shop bestsellers</a><a class="btn ghost" href="#blindbox">Blind boxes 🎁</a></div>
+<div class="hero"><div class="carousel" id="heroCarousel"><div class="track"><a class="slide" href="#merch"><img src="images/merch-cap-cream.jpg" alt="Panda Cap — Embroidered"><span class="cap">Panda Cap · <span class="p" data-usd="26.99">$26.99</span></span></a><a class="slide" href="#hero-pick"><img src="images/A-journal-kit-1.jpg" alt="DIY Journal Kit"><span class="cap">DIY Journal Kit · <span class="p" data-usd="18.99">$18.99</span></span></a><a class="slide" href="#best"><img src="images/B-panda-plush-bag-charm-1.jpg" alt="Panda Plush Bag Charm — 15cm"><span class="cap">Panda Plush Bag Charm · <span class="p" data-usd="9.99">$9.99</span></span></a><a class="slide" href="#merch"><img src="images/merch-hoodie-pink.jpg" alt="Cuppa Panda Hoodie — Pink"><span class="cap">Cuppa Panda Hoodie · <span class="p" data-usd="44.99">$44.99</span></span></a><a class="slide" href="#blindbox"><img src="images/C-capybara-blind-box-1.jpg" alt="Capybara Blind Box Figure"><span class="cap">Capybara Blind Box · <span class="p" data-usd="6.49">$6.49</span></span></a><a class="slide" href="#merch"><img src="images/catalog-models-backpack.jpg" alt="Cuppa Panda Backpack — Pink"><span class="cap">Cuppa Panda Backpack · <span class="p" data-usd="47.99">$47.99</span></span></a></div><button class="carbtn prev" type="button" aria-label="Previous slide">‹</button><button class="carbtn next" type="button" aria-label="Next slide">›</button><div class="dots"></div></div><h1>Cute things for your <em>desk</em> &amp; your <em>bag</em></h1><p>Stationery, bag charms and blind boxes — hand-picked by a 14-year-old, for girls who love cute. Now shipping to the UK, Ireland &amp; Europe!</p><a class="btn" href="#best">Shop bestsellers</a><a class="btn ghost" href="#blindbox">Blind boxes 🎁</a></div>
 <div class="marquee">✿ REAL PRODUCT PHOTOS ✿ TAP ANY PHOTO TO SEE ANOTHER ANGLE ✿</div>
 <section id="best"><h2>Bestsellers ⭐</h2><p class="sub">Tap a photo to flip to the second angle 👆 · Prices switch between £ / € / $ at the top</p><div class="grid"><div class="card"><div class="thumb" onclick="flip(this)"><img loading="lazy" decoding="async" src="images/B-panda-plush-bag-charm-1.jpg" data-alt="images/B-panda-plush-bag-charm-2.jpg" alt="Panda Plush Bag Charm — 15cm"><span class="badge ">SHOP ICON</span><span class="flip-hint">👆 tap for angle 2</span></div><div class="body"><h4>Panda Plush Bag Charm — 15cm</h4><div class="price"><span class="p" data-usd="9.99">$9.99</span></div></div></div><div class="card"><div class="thumb" onclick="flip(this)"><img loading="lazy" decoding="async" src="images/C-capybara-blind-box-1.jpg" data-alt="images/C-capybara-blind-box-2.jpg" alt="Capybara Blind Box Figure"><span class="badge lav">MYSTERY</span><span class="flip-hint">👆 tap for angle 2</span></div><div class="body"><h4>Capybara Blind Box Figure</h4><div class="price"><span class="p" data-usd="6.49">$6.49</span></div></div></div><div class="card"><div class="thumb" onclick="flip(this)"><img loading="lazy" decoding="async" src="images/D-beaded-phone-strap-1.jpg" data-alt="images/D-beaded-phone-strap-2.jpg" alt="Beaded Phone Strap — Butterfly & Pearl"><span class="badge mint">VIRAL</span><span class="flip-hint">👆 tap for angle 2</span></div><div class="body"><h4>Beaded Phone Strap — Butterfly & Pearl</h4><div class="price"><span class="p" data-usd="6.49">$6.49</span></div></div></div><div class="card"><div class="thumb" onclick="flip(this)"><img loading="lazy" decoding="async" src="images/E-bread-squishy-set-1.jpg" data-alt="images/E-bread-squishy-set-2.jpg" alt="Slow-Rising Squishy — Bread Set"><span class="flip-hint">👆 tap for angle 2</span></div><div class="body"><h4>Slow-Rising Squishy — Bread Set</h4><div class="price"><span class="p" data-usd="8.99">$8.99</span></div></div></div><div class="card"><div class="thumb" onclick="flip(this)"><img loading="lazy" decoding="async" src="images/F-acetate-claw-clip-set-1.jpg" data-alt="images/F-acetate-claw-clip-set-2.jpg" alt="Acetate Claw Clip Set"><span class="flip-hint">👆 tap for angle 2</span></div><div class="body"><h4>Acetate Claw Clip Set</h4><div class="price"><span class="p" data-usd="6.99">$6.99</span></div></div></div><div class="card"><div class="thumb" onclick="flip(this)"><img loading="lazy" decoding="async" src="images/G-waterproof-sticker-pack-1.jpg" data-alt="images/G-waterproof-sticker-pack-2.jpg" alt="Waterproof Sticker Pack — 50 pcs"><span class="flip-hint">👆 tap for angle 2</span></div><div class="body"><h4>Waterproof Sticker Pack — 50 pcs</h4><div class="price"><span class="p" data-usd="3.49">$3.49</span></div></div></div><div class="card"><div class="thumb" onclick="flip(this)"><img loading="lazy" decoding="async" src="images/H-bread-plush-keychain-1.jpg" data-alt="images/H-bread-plush-keychain-2.jpg" alt="Bread Plush Keychain"><span class="flip-hint">👆 tap for angle 2</span></div><div class="body"><h4>Bread Plush Keychain</h4><div class="price"><span class="p" data-usd="7.49">$7.49</span></div></div></div><div class="card"><div class="thumb" onclick="flip(this)"><img loading="lazy" decoding="async" src="images/I-pastel-highlighters-1.jpg" data-alt="images/I-pastel-highlighters-2.jpg" alt="Pastel Highlighters — 6 Colours"><span class="flip-hint">👆 tap for angle 2</span></div><div class="body"><h4>Pastel Highlighters — 6 Colours</h4><div class="price"><span class="p" data-usd="4.49">$4.49</span></div></div></div></div></section>
 <section id="merch"><h2>Cuppa Panda merch 🧸</h2><p class="sub">Wear the panda! Made to order — printed just for you, ages 14–18 favourites</p><div class="grid"><div class="card"><div class="thumb" style="cursor:default"><img src="images/catalog-models-beanie.jpg" alt="Panda Beanie — Fluffy Face"><span class="badge">NEW</span></div><div class="body"><h4>Panda Beanie — Fluffy Face</h4><div class="price"><span class="p" data-usd="24.99">$24.99</span></div><p style="color:var(--soft);font-size:12px;margin-top:3px">Pink · Mint · Cream · One size</p></div></div><div class="card"><div class="thumb" style="cursor:default"><img src="images/catalog-models-cap.jpg" alt="Panda Cap — Embroidered"><span class="badge">NEW</span></div><div class="body"><h4>Panda Cap — Embroidered</h4><div class="price"><span class="p" data-usd="26.99">$26.99</span></div><p style="color:var(--soft);font-size:12px;margin-top:3px">Pink · Cream · Adjustable</p></div></div><div class="card"><div class="thumb" style="cursor:default"><img src="images/merch-hoodie-pink.jpg" alt="Cuppa Panda Hoodie — Pink"><span class="badge">NEW MERCH</span></div><div class="body"><h4>Cuppa Panda Hoodie — Pink</h4><div class="price"><span class="p" data-usd="44.99">$44.99</span></div><p style="color:var(--soft);font-size:12px;margin-top:3px">Sizes XS–XL · Oversized fit · Big front print</p></div></div><div class="card"><div class="thumb" style="cursor:default"><img src="images/merch-sweatshirt-cream.jpg" alt="Panda Sweatshirt — Cream"></div><div class="body"><h4>Panda Sweatshirt — Cream</h4><div class="price"><span class="p" data-usd="39.99">$39.99</span></div><p style="color:var(--soft);font-size:12px;margin-top:3px">Sizes XS–XL · Embroidered panda chest logo</p></div></div><div class="card"><div class="thumb" style="cursor:default"><img src="images/catalog-models-backpack.jpg" alt="Cuppa Panda Backpack — Pink"></div><div class="body"><h4>Cuppa Panda Backpack — Pink</h4><div class="price"><span class="p" data-usd="47.99">$47.99</span></div><p style="color:var(--soft);font-size:12px;margin-top:3px">As worn by Mia · Panda-in-cup print</p></div></div><div class="card"><div class="thumb" style="cursor:default"><img src="images/merch-socks-3pairs.jpg" alt="Panda Socks — 3 Pairs"></div><div class="body"><h4>Panda Socks — 3 Pairs</h4><div class="price"><span class="p" data-usd="16.99">$16.99</span></div><p style="color:var(--soft);font-size:12px;margin-top:3px">Pink / Cream / Mint · One size (UK 3–6)</p></div></div></div></section>
@@ -100,6 +121,31 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 <section><div class="news"><h2 style="color:#fff">Join the Panda Club 💌</h2><p style="color:#d8ccd1;margin:6px 0 16px;font-size:14px">Get 15% off your first order + first look at Friday drops.</p><input type="email" id="newsEmail" placeholder="Your email address"><button type="button" id="newsJoin">Join</button><p class="newsmsg" id="newsMsg"></p></div></section>
 <footer><b>🐼 CuppaPanda.com</b><br>UK delivery 5–10 working days · Ireland &amp; EU 7–12 working days · Free delivery over £35 / €40 / $45<br>14-day returns on unused items · Blind boxes are final sale once opened<br>Contact: <a href="mailto:hello@cuppapanda.com">hello@cuppapanda.com</a> · <a href="https://www.instagram.com/cuppapanda" target="_blank" rel="noopener">Instagram @cuppapanda</a> · <a href="https://www.tiktok.com/@cuppapanda" target="_blank" rel="noopener">TikTok @cuppapanda</a><br>© 2026 Cuppa Panda. Run with love (and parental supervision).</footer>
 
+
+<div class="pdp-overlay" id="pdpOverlay" role="dialog" aria-modal="true">
+  <div class="pdp">
+    <button class="pdp-close" id="pdpClose" aria-label="Close">✕</button>
+    <div class="pdp-grid">
+      <div>
+        <img class="pdp-main" id="pdpMain" src="" alt="">
+        <div class="pdp-thumbs" id="pdpThumbs"></div>
+      </div>
+      <div>
+        <h3 id="pdpName"></h3>
+        <div class="pdp-price"><span class="p" id="pdpPrice" data-usd="0">$0</span></div>
+        <div class="pdp-meta" id="pdpMeta"></div>
+        <ul>
+          <li>Hand-picked &amp; tested by our 14-year-old curator</li>
+          <li>Delivery typically 3–5 working days — UK, Ireland &amp; Europe</li>
+          <li>Checkout by email for now: we reply to confirm your order before you pay a penny</li>
+          <li>Questions? <a href="mailto:hello@cuppapanda.com">hello@cuppapanda.com</a></li>
+        </ul>
+        <span class="pdp-qty"><button type="button" id="pdpMinus" aria-label="Less">−</button><b id="pdpQty">1</b><button type="button" id="pdpPlus" aria-label="More">+</button></span>
+        <button class="addbtn" id="pdpAdd" type="button">Add to cart 🛒</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="overlay"></div>
 <aside id="drawer" aria-label="Shopping cart">
   <div class="dhead"><b>Your cart 🛒</b><button class="x" id="drawerClose" type="button" aria-label="Close cart">✕</button></div>
@@ -171,6 +217,65 @@ function joinClub(){
 document.getElementById('newsJoin').addEventListener('click',joinClub);
 document.getElementById('newsEmail').addEventListener('keydown',function(e){if(e.key==='Enter'){joinClub();}});
 
+
+/* ---------- product detail (PDP) ---------- */
+var pdpCard=null, pdpQty=1;
+function cardData(card){
+  var title=card.querySelector('h4,h3');
+  var pEl=card.querySelector('.p');
+  var meta='';
+  if(card.id==='hero-pick'){ var nx=title.nextElementSibling; if(nx && nx.tagName==='P') meta=nx.textContent.trim(); }
+  else { var mp=card.querySelector('.body p'); if(mp) meta=mp.textContent.trim(); }
+  var imgs=[];
+  card.querySelectorAll('.thumb img, .vis img').forEach(function(im){ if(im.getAttribute('src')) imgs.push(im.getAttribute('src')); if(im.dataset.alt) imgs.push(im.dataset.alt); });
+  var name=title?title.textContent.trim():'';
+  return {name:name, title:name, usd:parseFloat(pEl.dataset.usd), meta:meta, imgs:[...new Set(imgs)]};
+}
+function openPDP(card){
+  pdpCard=card; pdpQty=1;
+  var d=cardData(card);
+  document.getElementById('pdpName').textContent=d.title;
+  var pr=document.getElementById('pdpPrice'); pr.dataset.usd=d.usd; pr.textContent=charm(d.usd);
+  document.getElementById('pdpMeta').textContent=d.meta;
+  document.getElementById('pdpQty').textContent='1';
+  var main=document.getElementById('pdpMain'); main.src=d.imgs[0]||''; main.alt=d.title;
+  var th=document.getElementById('pdpThumbs'); th.innerHTML='';
+  d.imgs.forEach(function(src,i){
+    var b=document.createElement('button'); b.type='button'; if(i===0)b.className='on';
+    b.innerHTML='<img src="'+src+'" alt="">';
+    b.addEventListener('click',function(){ main.src=src; th.querySelectorAll('button').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); });
+    th.appendChild(b);
+  });
+  document.getElementById('pdpOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closePDP(){ document.getElementById('pdpOverlay').classList.remove('open'); document.body.style.overflow=''; }
+document.getElementById('pdpClose').addEventListener('click',closePDP);
+document.getElementById('pdpOverlay').addEventListener('click',function(e){ if(e.target===this) closePDP(); });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closePDP(); });
+document.getElementById('pdpMinus').addEventListener('click',function(){ pdpQty=Math.max(1,pdpQty-1); document.getElementById('pdpQty').textContent=pdpQty; });
+document.getElementById('pdpPlus').addEventListener('click',function(){ pdpQty=Math.min(99,pdpQty+1); document.getElementById('pdpQty').textContent=pdpQty; });
+document.getElementById('pdpAdd').addEventListener('click',function(){
+  if(!pdpCard) return; var d=cardData(pdpCard);
+  for(var i=0;i<pdpQty;i++) addToCart(d.name, d.usd);
+  closePDP();
+});
+document.querySelectorAll('.card, #hero-pick').forEach(function(card){
+  var info=card.querySelector('.body, .txt'); if(!info) return;
+  var vb=document.createElement('button'); vb.type='button'; vb.className='viewbtn'; vb.textContent='View details 👀';
+  vb.addEventListener('click',function(){ openPDP(card); });
+  info.appendChild(vb);
+  var title=card.querySelector('h4,h3');
+  if(title) title.addEventListener('click',function(){ openPDP(card); });
+});
+document.querySelectorAll('#heroCarousel .slide').forEach(function(slide){
+  slide.addEventListener('click',function(e){
+    var cap=slide.querySelector('.cap'); if(!cap) return;
+    var name=cap.textContent.split('·')[0].trim();
+    var match=[...document.querySelectorAll('.card, #hero-pick')].find(function(c){ var h=c.querySelector('h4,h3'); return h && h.textContent.trim().indexOf(name)===0; });
+    if(match){ e.preventDefault(); openPDP(match); }
+  });
+});
 /* ---------- hero carousel ---------- */
 (function(){
   var car=document.getElementById('heroCarousel'); if(!car) return;
