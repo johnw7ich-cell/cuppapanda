@@ -67,6 +67,10 @@ footer{padding:30px 18px 44px;text-align:center;color:var(--soft);font-size:13px
 #drawer .tot{display:flex;justify-content:space-between;font-weight:800;font-size:16px;margin-bottom:6px}
 #shipNote{font-size:12px;color:var(--soft);margin-bottom:10px;line-height:1.5}
 #checkout{width:100%;border:none;background:var(--pink-deep);color:#fff;border-radius:999px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 5px 0 #c74e72}
+#checkout:disabled{opacity:.6;cursor:wait}
+#coForm input,#coForm select{width:100%;box-sizing:border-box;padding:10px 12px;border:2px solid #f3cfd8;border-radius:12px;margin-bottom:8px;font-size:14px;background:#fff}
+#coMsg{font-size:12.5px;line-height:1.5;margin:2px 0 8px;color:var(--ink)}
+#coMsg:empty{display:none}
 .empty{color:var(--soft);text-align:center;padding:26px 0;font-size:14px;line-height:1.6}
 .newsmsg{margin-top:12px;font-size:14px;color:#ffe3ec;min-height:18px}
 .newsmsg b{color:#fff;background:var(--pink-deep);padding:2px 9px;border-radius:6px;letter-spacing:1px}
@@ -153,8 +157,28 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
   <div class="dfoot">
     <div class="tot"><span>Subtotal</span><span id="subTotal">£0.00</span></div>
     <p id="shipNote"></p>
-    <button id="checkout" type="button">Checkout by email 📧</button>
-    <p style="font-size:11px;color:var(--soft);margin-top:8px;line-height:1.5">Opening-soon checkout: this opens an email with your order pre-filled — we reply with a secure payment link. No payment is taken on this page.</p>
+    <div id="coForm">
+      <input id="coEmail" type="email" placeholder="Your email (for order confirmation)" autocomplete="email">
+      <input id="coName" type="text" placeholder="Your name" autocomplete="name">
+      <select id="coCountry">
+        <option value="United Kingdom">United Kingdom</option>
+        <option value="Ireland">Ireland</option>
+        <option value="France">France</option>
+        <option value="Germany">Germany</option>
+        <option value="Spain">Spain</option>
+        <option value="Italy">Italy</option>
+        <option value="Netherlands">Netherlands</option>
+        <option value="Belgium">Belgium</option>
+        <option value="Portugal">Portugal</option>
+        <option value="Austria">Austria</option>
+        <option value="Poland">Poland</option>
+        <option value="Other (Europe)">Other (Europe)</option>
+      </select>
+      <input id="coPromo" type="text" placeholder="Promo code (e.g. PANDA15)">
+      <p id="coMsg" role="status"></p>
+    </div>
+    <button id="checkout" type="button">Place order 🐼</button>
+    <p style="font-size:11px;color:var(--soft);margin-top:8px;line-height:1.5">Place your order here and we reply by email to confirm it and send a secure payment link. No payment is taken on this page. Delivery is confirmed in that email.</p>
   </div>
 </aside>
 <script>
@@ -191,11 +215,35 @@ function closeDrawer(){document.getElementById('drawer').classList.remove('open'
 document.getElementById('cartBtn').addEventListener('click',openDrawer);
 document.getElementById('drawerClose').addEventListener('click',closeDrawer);
 document.getElementById('overlay').addEventListener('click',closeDrawer);
-document.getElementById('checkout').addEventListener('click',function(){
-  if(!cart.length)return;
+/* ---------- checkout via API (Step 3) ---------- */
+var NAME_TO_SKU={'DIY Journal Kit \u2014 Everything in One Box':'journal-kit','Panda Plush Bag Charm \u2014 15cm':'panda-plush-bag-charm','Capybara Blind Box Figure':'capybara-blind-box','Beaded Phone Strap \u2014 Butterfly & Pearl':'beaded-phone-strap','Slow-Rising Squishy \u2014 Bread Set':'bread-squishy-set','Acetate Claw Clip Set':'acetate-claw-clip-set','Waterproof Sticker Pack \u2014 50 pcs':'waterproof-sticker-pack','Bread Plush Keychain':'bread-plush-keychain','Pastel Highlighters \u2014 6 Colours':'pastel-highlighters','Mochi Animal Squishies \u2014 10 pcs':'mochi-squishies','Washi Tape Set \u2014 10 Rolls':'washi-tape-set','Panda Beanie \u2014 Fluffy Face':'panda-beanie','Panda Cap \u2014 Embroidered':'panda-cap','Cuppa Panda Hoodie \u2014 Pink':'hoodie-pink','Panda Sweatshirt \u2014 Cream':'sweatshirt-cream','Cuppa Panda Backpack \u2014 Pink':'backpack-pink','Panda Socks \u2014 3 Pairs':'panda-socks'};
+function mailtoFallback(){
   var lines=cart.map(function(i){return i.qty+' x '+i.name+' \u2014 '+fmt(unit(i.usd)*i.qty);});
   var body='Hi Cuppa Panda! I would like to order:\n\n'+lines.join('\n')+'\n\nSubtotal: '+fmt(cartTotalCur())+' ('+CUR+')\n\nMy name: \nDelivery address: \n';
   window.location.href='mailto:hello@cuppapanda.com?subject='+encodeURIComponent('Cuppa Panda order')+'&body='+encodeURIComponent(body);
+}
+document.getElementById('checkout').addEventListener('click',function(){
+  if(!cart.length)return;
+  var btn=this,msg=document.getElementById('coMsg');
+  var email=document.getElementById('coEmail').value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){msg.textContent='Please enter your email so we can confirm your order \ud83d\udc9c';document.getElementById('coEmail').focus();return;}
+  var items=[],unmapped=false;
+  cart.forEach(function(i){var sku=NAME_TO_SKU[i.name];if(!sku){unmapped=true;}else{items.push({sku:sku,qty:i.qty});}});
+  if(unmapped){mailtoFallback();return;}
+  btn.disabled=true;btn.textContent='Placing order\u2026';msg.textContent='';
+  fetch('/api/checkout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({items:items,currency:CUR,country:document.getElementById('coCountry').value,email:email,name:document.getElementById('coName').value.trim()||null,promo:document.getElementById('coPromo').value.trim()||null})})
+  .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d};});})
+  .then(function(res){
+    btn.disabled=false;btn.textContent='Place order \ud83d\udc3c';
+    if(!res.ok){msg.textContent=(res.d&&res.d.error)?res.d.error:'Sorry, something went wrong \u2014 please try again or email us.';return;}
+    var d=res.d,txt='Order placed! \ud83c\udf89 Your order number is <b>'+d.order_no+'</b>. Total: <b>'+fmt(d.total_cents/100)+'</b>';
+    if(d.discount_cents>0)txt+=' (discount applied: \u2212'+fmt(d.discount_cents/100)+')';
+    if(d.free_shipping)txt+=' with FREE delivery';
+    txt+='. We will email '+email+' to confirm your order and send a secure payment link.';
+    msg.innerHTML=txt;
+    cart=[];saveCart();renderCart();
+  })
+  .catch(function(){btn.disabled=false;btn.textContent='Place order \ud83d\udc3c';msg.textContent='Online checkout is unavailable right now \u2014 opening your email app instead.';mailtoFallback();});
 });
 /* add-to-cart buttons on every product card */
 document.querySelectorAll('.card').forEach(function(card){
@@ -210,9 +258,16 @@ if(heroBtn){heroBtn.addEventListener('click',function(){var s=document.querySele
 function joinClub(){
   var inp=document.getElementById('newsEmail'),msg=document.getElementById('newsMsg'),v=inp.value.trim();
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){msg.textContent='Please enter a valid email address \ud83d\udc9c';return;}
-  try{var list=JSON.parse(localStorage.getItem('cuppapanda_club')||'[]');if(list.indexOf(v)===-1){list.push(v);localStorage.setItem('cuppapanda_club',JSON.stringify(list));}}catch(e){}
-  msg.innerHTML='You are in! \ud83c\udf89 Your 15% off code is <b>PANDA15</b> \u2014 use it on your first order.';
-  inp.value='';
+  var done=function(){msg.innerHTML='You are in! \ud83c\udf89 Your 15% off code is <b>PANDA15</b> \u2014 use it on your first order.';inp.value='';};
+  /* Step 3: store the signup in Supabase via /api/subscribe.
+     Fallback keeps the old browser-only behaviour if the API is unreachable. */
+  fetch('/api/subscribe',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:v})})
+  .then(function(r){if(!r.ok)throw new Error('api');return r.json();})
+  .then(function(){done();})
+  .catch(function(){
+    try{var list=JSON.parse(localStorage.getItem('cuppapanda_club')||'[]');if(list.indexOf(v)===-1){list.push(v);localStorage.setItem('cuppapanda_club',JSON.stringify(list));}}catch(e){}
+    done();
+  });
 }
 document.getElementById('newsJoin').addEventListener('click',joinClub);
 document.getElementById('newsEmail').addEventListener('keydown',function(e){if(e.key==='Enter'){joinClub();}});
