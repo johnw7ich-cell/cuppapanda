@@ -71,6 +71,22 @@ footer{padding:30px 18px 44px;text-align:center;color:var(--soft);font-size:13px
 #coForm input,#coForm select{width:100%;box-sizing:border-box;padding:10px 12px;border:2px solid #f3cfd8;border-radius:12px;margin-bottom:8px;font-size:14px;background:#fff}
 #coMsg{font-size:12.5px;line-height:1.5;margin:2px 0 8px;color:var(--ink)}
 #coMsg:empty{display:none}
+#botBtn{position:fixed;right:18px;bottom:18px;z-index:80;width:58px;height:58px;border-radius:50%;border:none;background:var(--pink-deep);color:#fff;font-size:23px;cursor:pointer;box-shadow:0 8px 22px rgba(180,80,110,.4)}
+#botPanel{position:fixed;right:18px;bottom:86px;z-index:80;width:min(350px,94vw);height:min(520px,74vh);background:#fff;border-radius:20px;box-shadow:0 18px 50px rgba(120,60,80,.35);display:none;flex-direction:column;overflow:hidden}
+#botPanel.open{display:flex}
+#botPanel .bhead{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;background:var(--pink-deep);color:#fff;font-size:15px}
+#botPanel .bhead .x{border:none;background:rgba(255,255,255,.22);color:#fff;width:30px;height:30px;border-radius:50%;font-size:14px;cursor:pointer}
+#botMsgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#fdf7f9}
+.bmsg{max-width:86%;padding:9px 12px;border-radius:14px;font-size:13.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.bmsg.bot{background:#fff;border:1.5px solid #f3cfd8;align-self:flex-start;border-bottom-left-radius:4px}
+.bmsg.me{background:var(--pink-deep);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+#botChips{display:flex;flex-wrap:wrap;gap:6px;padding:9px 12px;background:#fdf7f9;border-top:1px dashed #f3cfd8}
+#botChips:empty{display:none}
+#botChips button{border:1.5px solid var(--pink-deep);background:#fff;color:var(--pink-deep);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:700;cursor:pointer}
+#botPanel .bfoot{display:flex;gap:8px;padding:10px 12px;border-top:2px dashed #f3cfd8}
+#botInput{flex:1;border:2px solid #f3cfd8;border-radius:999px;padding:9px 13px;font-size:13.5px;min-width:0}
+#botSend{border:none;background:var(--pink-deep);color:#fff;border-radius:999px;padding:9px 16px;font-weight:800;cursor:pointer}
+#botPanel .bnote{font-size:11px;color:var(--soft);text-align:center;padding:0 10px 9px;margin:0;background:#fff}
 .empty{color:var(--soft);text-align:center;padding:26px 0;font-size:14px;line-height:1.6}
 .newsmsg{margin-top:12px;font-size:14px;color:#ffe3ec;min-height:18px}
 .newsmsg b{color:#fff;background:var(--pink-deep);padding:2px 9px;border-radius:6px;letter-spacing:1px}
@@ -181,6 +197,17 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
     <p style="font-size:11px;color:var(--soft);margin-top:8px;line-height:1.5">Place your order here and we reply by email to confirm it and send a secure payment link. No payment is taken on this page. Delivery is confirmed in that email.</p>
   </div>
 </aside>
+<button id="botBtn" type="button" aria-label="Chat with Cuppa Panda help">🐼💬</button>
+<div id="botPanel" role="dialog" aria-label="Cuppa Panda help chat">
+  <div class="bhead"><b>🐼 Cuppa Panda help</b><button class="x" id="botClose" type="button" aria-label="Close chat">✕</button></div>
+  <div id="botMsgs"></div>
+  <div id="botChips"></div>
+  <div class="bfoot">
+    <input id="botInput" type="text" placeholder="Ask about delivery, returns, blind boxes…" autocomplete="off">
+    <button id="botSend" type="button">Send</button>
+  </div>
+  <p class="bnote">Quick answers from our FAQ · For anything else: <a href="mailto:hello@cuppapanda.com">hello@cuppapanda.com</a></p>
+</div>
 <script>
 function flip(el){var img=el.querySelector('img');var t=img.getAttribute('src');img.setAttribute('src',img.dataset.alt);img.dataset.alt=t;}
 var RATES={GBP:{r:0.75,s:'\u00a3',t:'\u00a335',th:35},EUR:{r:0.86,s:'\u20ac',t:'\u20ac40',th:40},USD:{r:1,s:'$',t:'$45',th:45}};
@@ -347,6 +374,72 @@ document.querySelectorAll('#heroCarousel .slide').forEach(function(slide){
   car.addEventListener('pointerleave',restart);
   go(0); restart();
 })();
+/* ---------- FAQ bot widget (Step 4) ---------- */
+var BOT_FAQS=[
+ {keys:['deliver','shipping time','how long','arrive','postage time'],q:'How long does delivery take?',a:'UK: 5\u201310 working days. Ireland & EU: 7\u201312 working days. Merch is made to order first (5\u201310 working days to make), then shipped. We ship to the UK, Ireland & Europe.'},
+ {keys:['free delivery','free shipping','postage cost','shipping cost','delivery cost'],q:'How much is delivery?',a:'Delivery is FREE over \u00a335 / \u20ac40 / $45. Below that, we confirm the postage with your order by email.'},
+ {keys:['return','refund','exchange','send back'],q:'Can I return something?',a:'Yes \u2014 14-day returns on unused items. Email hello@cuppapanda.com and we will sort it out. (Refunds are handled by a human, not the bot.)'},
+ {keys:['blind box','surprise','which design','specific design','choose design','secret'],q:'How do blind boxes work?',a:'Each blind box is a surprise: every series has 6\u20138 designs plus 1 secret rare. We cannot guarantee a specific design \u2014 that is the fun of it! Got a double? Trade with friends.'},
+ {keys:['panda club','discount','promo','code','15%','offer','newsletter'],q:'What is the Panda Club?',a:'Join the Panda Club on our homepage for 15% off your first order with code PANDA15, plus first looks at new Friday drops.'},
+ {keys:['pay','payment','card','checkout'],q:'How do I pay?',a:'Place your order on the site and we will email you to confirm it and send a secure payment link. No payment is taken on the website itself.'},
+ {keys:['made to order','merch','hoodie','print'],q:'Why does merch take longer?',a:'Merch is made to order \u2014 printed just for you \u2014 which takes 5\u201310 working days to make before delivery time.'},
+ {keys:['contact','email','human','help','talk to'],q:'How can I contact you?',a:'Email us anytime at hello@cuppapanda.com \u2014 a human (Cuppa Panda\u2019s dad) reads every message.'}
+];
+var BOT_HANDOFF='I can only answer our common questions. For refunds, address changes, payment issues or anything else, please email hello@cuppapanda.com and a human will help you.';
+var BOT_STATUS={pending:'Order received! \ud83d\udc3c We are confirming it by email \u2014 look out for our message with your secure payment link.',paid:'Paid \u2705 Thank you! We are preparing your order.',fulfilled:'Packed and ready to go \ud83d\udce6',shipped:'Shipped \ud83d\ude9a It is on its way to you!',delivered:'Delivered \ud83c\udf89 Enjoy your goodies!',refunded:'This order has been refunded. Check your email for the details.',cancelled:'This order was cancelled. If that is a surprise, email us and we will sort it out.'};
+var botState={mode:'faq',orderNo:'',started:false};
+function botAdd(text,who){var box=document.getElementById('botMsgs');var d=document.createElement('div');d.className='bmsg '+who;d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight;}
+function botChips(faqs){
+  var box=document.getElementById('botChips');box.innerHTML='';
+  var t=document.createElement('button');t.type='button';t.textContent='\ud83d\udce6 Track my order';
+  t.addEventListener('click',function(){botAdd('Track my order','me');botState.mode='track_no';botAdd('Of course! What is your order number? It looks like CP-20261022-1234 and is in your confirmation email. (Type \u201ccancel\u201d to stop.)','bot');});
+  box.appendChild(t);
+  faqs.slice(0,6).forEach(function(f){var b=document.createElement('button');b.type='button';b.textContent=f.q;b.addEventListener('click',function(){botAsk(f.q);});box.appendChild(b);});
+}
+function botStart(){
+  if(botState.started)return;botState.started=true;
+  botAdd('Hi! \ud83d\udc3c I am the Cuppa Panda helper. Ask me about delivery, returns, blind boxes \u2014 or tap \u201cTrack my order\u201d to check an order.','bot');
+  fetch('/api/faq').then(function(r){return r.json();}).then(function(d){botChips(d.faqs||BOT_FAQS);}).catch(function(){botChips(BOT_FAQS);});
+}
+function botLocalAnswer(q){
+  var s=q.toLowerCase();var hit=BOT_FAQS.find(function(f){return f.keys.some(function(k){return s.indexOf(k)>-1;});});
+  botAdd(hit?hit.a:BOT_HANDOFF,'bot');
+}
+function botTrack(email){
+  fetch('/api/order-status',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({order_no:botState.orderNo,email:email})})
+  .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d};});})
+  .then(function(res){
+    botState.mode='faq';
+    if(!res.ok){botAdd('Hmm, I could not find an order with that number and email. Please check both and try again \u2014 or email hello@cuppapanda.com and we will look it up for you.','bot');return;}
+    var d=res.d,sym={GBP:'\u00a3',EUR:'\u20ac',USD:'$'}[d.currency]||'';
+    var when='';try{when=' ('+new Date(d.created_at).toLocaleDateString()+')';}catch(e){}
+    botAdd('Order '+d.order_no+when+' \u2014 total '+sym+(d.total_cents/100).toFixed(2)+'\n'+(BOT_STATUS[d.status]||('Status: '+d.status)),'bot');
+  })
+  .catch(function(){botState.mode='faq';botAdd('Order tracking is unavailable right now \u2014 please email hello@cuppapanda.com with your order number and we will check for you.','bot');});
+}
+function botAsk(q){
+  q=(q||'').trim();if(!q)return;
+  botAdd(q,'me');
+  if(botState.mode==='track_no'){
+    if(q.toLowerCase()==='cancel'){botState.mode='faq';botAdd('No problem \u2014 tracking cancelled. Ask me anything else!','bot');return;}
+    botState.orderNo=q.toUpperCase();botState.mode='track_email';
+    botAdd('Thanks! And the email address you used for that order?','bot');return;
+  }
+  if(botState.mode==='track_email'){
+    if(q.toLowerCase()==='cancel'){botState.mode='faq';botAdd('No problem \u2014 tracking cancelled. Ask me anything else!','bot');return;}
+    botAdd('Let me check\u2026','bot');botTrack(q);return;
+  }
+  fetch('/api/faq',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({q:q})})
+  .then(function(r){return r.json();})
+  .then(function(d){botAdd(d.a||BOT_HANDOFF,'bot');})
+  .catch(function(){botLocalAnswer(q);});
+}
+document.getElementById('botBtn').addEventListener('click',function(){var p=document.getElementById('botPanel');p.classList.toggle('open');if(p.classList.contains('open')){botStart();document.getElementById('botInput').focus();}});
+document.getElementById('botClose').addEventListener('click',function(){document.getElementById('botPanel').classList.remove('open');});
+document.getElementById('botSend').addEventListener('click',function(){var i=document.getElementById('botInput');botAsk(i.value);i.value='';});
+document.getElementById('botInput').addEventListener('keydown',function(e){if(e.key==='Enter'){botAsk(this.value);this.value='';}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.getElementById('botPanel').classList.remove('open');});
+
 setCur('GBP');renderCart();
 </script>
 </body></html>
