@@ -16,7 +16,13 @@ GitHub Pages stays as the preview until the Cloudflare deploy is verified.
 - `functions/api/` — Cloudflare Pages Functions:
   - `checkout.js` — validates the cart against Supabase prices, creates a
     `pending` order, returns an order number. Payment mode is `email` until a
-    gateway is connected (same as the current site behaviour).
+    gateway is connected; when `STRIPE_SECRET_KEY` is set it also creates a
+    Stripe Checkout Session and returns `payment_mode: 'stripe'` +
+    `checkout_url` (see Step 5).
+  - `stripe-webhook.js` — Stripe webhook endpoint (Step 5). Verifies the
+    `Stripe-Signature` header (HMAC-SHA256 over the raw body), records events
+    in `webhook_events` for idempotency, and flips an order to `paid` only
+    when a `checkout.session.completed` amount + currency match the order.
   - `subscribe.js` — Panda Club signup stored in Supabase (returns PANDA15).
   - `order-status.js` — order lookup requiring order number + email.
   - `faq.js` — approved FAQ answers for the bot (rule-based, $0 to run).
@@ -51,15 +57,54 @@ drives the browser while Joh approves sign-ins / enters keys on secure pages.
   IE-EU 7–12 working days; the PDP overlay says 3–5 days. The bot uses the
   footer version until Joh confirms one canonical matrix.
 
-## Step 5 — payments (blocked on merchant entity)
+## Step 5 — payments: Stripe (code ready 2026-10-23; keys pending)
 
-- Entity undecided (Joh, 2026-10-22). Recommended path: Macau registration +
-  PayPal for soft launch → Hong Kong company later for Stripe HK + Airwallex.
-- When chosen: add the gateway's hosted-checkout session to `checkout.js` and a
-  signed webhook function that flips orders to `paid` (webhook_events table is
-  already there for idempotency). Upgrade Supabase to Pro ($25/mo) before this.
-- Custom domain cuppapanda.com moves to Cloudflare at this stage (DNS is
-  currently parked on Squarespace).
+Joh opened a Stripe account under a UK entity (2026-10-23; the account still
+shows "Payments paused" until activation/KYC is completed in the dashboard).
+Integration mode chosen there: **Prebuilt checkout** (Stripe-hosted Checkout).
+
+How it works:
+
+- `checkout.js` still creates the `pending` order first, with totals recomputed
+  server-side. **Only if `STRIPE_SECRET_KEY` is set** does it then create a
+  Stripe Checkout Session from those server-side lines (promo → a reusable
+  Stripe coupon, e.g. PANDA15 → `panda15-15`; shipping passed only when it is a
+  known amount — free shipping = 0, `null`/"confirm by email" = omitted) and
+  returns `checkout_url`. The browser redirects there; the cart is kept until
+  the customer returns. If the Stripe API call fails, checkout silently falls
+  back to `email` mode — the order is never lost. With no key set, behaviour is
+  exactly the old email mode.
+- The customer returns to `https://cuppapanda.com/?order=<no>&paid=1` (or
+  `&cancelled=1`); `index.html` shows a banner, clears the cart on `paid=1`,
+  and cleans the URL. **That redirect is cosmetic only** — an order becomes
+  `paid` solely via the webhook below.
+- `stripe-webhook.js` verifies the signature, records the event (idempotent),
+  cross-checks `amount_total` + `currency` against the stored order, and only
+  then sets `status='paid'` with `payment_ref` = the PaymentIntent id.
+  `checkout.session.expired` just leaves the order `pending` for email follow-up.
+
+Setup (Joh, in the Stripe dashboard + Cloudflare Pages → Settings → Environment
+variables, Production). Keys go through the secure entry flow — never chat:
+
+- `STRIPE_SECRET_KEY` — Stripe Dashboard → Developers → API keys → Secret key.
+- `STRIPE_WEBHOOK_SECRET` — created when registering the endpoint below.
+- Register the webhook: Developers → Webhooks → Add endpoint →
+  URL `https://cuppapanda.com/api/stripe-webhook`, events
+  `checkout.session.completed` and `checkout.session.expired`.
+
+Rollout — test mode first, always:
+
+1. Use **test** API keys (`sk_test_…` / test-mode webhook secret) in Cloudflare.
+2. Place a test order on the site and pay with card `4242 4242 4242 4242`
+   (any future expiry / CVC). Confirm: the order flips to `paid` in Supabase,
+   the row appears in `webhook_events`, and a redelivered event changes nothing.
+3. Also test the cancel path (back out of Checkout → `?cancelled=1`, cart intact).
+4. Upgrade **Supabase to Pro ($25/mo)** before real money — the Free project
+   pauses when idle, which would break webhook order updates.
+5. Swap in the **live** keys (`sk_live_…`, live webhook endpoint + secret),
+   re-run one small real order, then announce.
+- Note: UK/EU VAT duties (UK VAT ≤£135 consignments, EU IOSS ≤€150) sit with
+  the seller regardless of gateway — accountant advice before live sales.
 
 ## Costs
 

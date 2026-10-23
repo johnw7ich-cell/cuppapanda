@@ -69,6 +69,9 @@ footer{padding:30px 18px 44px;text-align:center;color:var(--soft);font-size:13px
 #checkout{width:100%;border:none;background:var(--pink-deep);color:#fff;border-radius:999px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 5px 0 #c74e72}
 #checkout:disabled{opacity:.6;cursor:wait}
 #coForm input,#coForm select{width:100%;box-sizing:border-box;padding:10px 12px;border:2px solid #f3cfd8;border-radius:12px;margin-bottom:8px;font-size:14px;background:#fff}
+#payBanner{display:none;background:#e7f6ec;border:2px solid #4da877;color:#205c3a;border-radius:14px;padding:13px 16px;margin:14px auto 0;max-width:1060px;font-size:14.5px;line-height:1.55;text-align:center}
+#payBanner.show{display:block}
+#payBanner.warn{background:#fdf3f5;border-color:#f0c3d0;color:var(--ink)}
 #coMsg{font-size:12.5px;line-height:1.5;margin:2px 0 8px;color:var(--ink)}
 #coMsg:empty{display:none}
 #botBtn{position:fixed;right:18px;bottom:18px;z-index:80;width:58px;height:58px;border-radius:50%;border:none;background:var(--pink-deep);color:#fff;font-size:23px;cursor:pointer;box-shadow:0 8px 22px rgba(180,80,110,.4)}
@@ -129,6 +132,7 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 .viewbtn{display:block;margin:8px auto 2px;background:none;border:none;color:var(--pink-deep);font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline}
 </style></head><body>
 <div class="bar">🎉 Opening soon — <b>Free delivery over <span id="thresh">£35</span></b> in the UK, Ireland &amp; Europe · New drops every Friday!</div>
+<div id="payBanner" role="status"></div>
 <header><div class="logo"><img src="images/logo-badge.png" alt="Cuppa Panda logo">Cuppa<span>Panda</span></div><nav><a href="#best">Bestsellers</a><a href="#merch">Merch</a><a href="#hero-pick">Journal Kit</a><a href="#blindbox">Blind Box</a><a href="#treats">Little Treats</a></nav><div class="curry"><button data-cur="GBP" class="on">£ GBP</button><button data-cur="EUR">€ EUR</button><button data-cur="USD">$ USD</button></div><button class="cartbtn" id="cartBtn" type="button">🛒 Cart (<span id="cartCount">0</span>)</button></header>
 <div class="hero"><div class="carousel" id="heroCarousel"><div class="track"><a class="slide" href="#merch"><img src="images/catalog-models-cap.jpg" alt="Panda Cap — Embroidered"><span class="cap">Panda Cap · <span class="p" data-usd="26.99">$26.99</span></span></a><a class="slide" href="#best"><img src="images/B-panda-plush-bag-charm-1.jpg" alt="Panda Plush Bag Charm — 15cm"><span class="cap">Panda Plush Bag Charm · <span class="p" data-usd="9.99">$9.99</span></span></a><a class="slide" href="#merch"><img src="images/merch-hoodie-pink.jpg" alt="Cuppa Panda Hoodie — Pink"><span class="cap">Cuppa Panda Hoodie · <span class="p" data-usd="44.99">$44.99</span></span></a><a class="slide" href="#blindbox"><img src="images/C-capybara-blind-box-1.jpg" alt="Capybara Blind Box Figure"><span class="cap">Capybara Blind Box · <span class="p" data-usd="6.49">$6.49</span></span></a><a class="slide" href="#merch"><img src="images/catalog-models-backpack.jpg" alt="Cuppa Panda Backpack — Pink"><span class="cap">Cuppa Panda Backpack · <span class="p" data-usd="47.99">$47.99</span></span></a></div><button class="carbtn prev" type="button" aria-label="Previous slide">‹</button><button class="carbtn next" type="button" aria-label="Next slide">›</button><div class="dots"></div></div><h1>Cute things for your <em>desk</em> &amp; your <em>bag</em></h1><p>Stationery, bag charms and blind boxes — hand-picked by a 14-year-old, for girls who love cute. Now shipping to the UK, Ireland &amp; Europe!</p><a class="btn" href="#best">Shop bestsellers</a><a class="btn ghost" href="#blindbox">Blind boxes 🎁</a></div>
 <div class="marquee">✿ REAL PRODUCT PHOTOS ✿ TAP ANY PHOTO TO SEE ANOTHER ANGLE ✿</div>
@@ -263,7 +267,16 @@ document.getElementById('checkout').addEventListener('click',function(){
   .then(function(res){
     btn.disabled=false;btn.textContent='Place order \ud83d\udc3c';
     if(!res.ok){msg.textContent=(res.d&&res.d.error)?res.d.error:'Sorry, something went wrong \u2014 please try again or email us.';return;}
-    var d=res.d,txt='Order placed! \ud83c\udf89 Your order number is <b>'+d.order_no+'</b>. Total: <b>'+fmt(d.total_cents/100)+'</b>';
+    var d=res.d;
+    /* Step 5: Stripe mode — hand over to the hosted checkout page. The cart is
+       kept until Stripe sends the customer back with ?paid=1 (handled below). */
+    if(d.checkout_url){
+      try{localStorage.setItem('cuppapanda_pending_order',d.order_no);}catch(e){}
+      msg.textContent='Taking you to secure payment\u2026';
+      window.location.href=d.checkout_url;
+      return;
+    }
+    var txt='Order placed! \ud83c\udf89 Your order number is <b>'+d.order_no+'</b>. Total: <b>'+fmt(d.total_cents/100)+'</b>';
     if(d.discount_cents>0)txt+=' (discount applied: \u2212'+fmt(d.discount_cents/100)+')';
     if(d.free_shipping)txt+=' with FREE delivery';
     txt+='. We will email '+email+' to confirm your order and send a secure payment link.';
@@ -272,6 +285,26 @@ document.getElementById('checkout').addEventListener('click',function(){
   })
   .catch(function(){btn.disabled=false;btn.textContent='Place order \ud83d\udc3c';msg.textContent='Online checkout is unavailable right now \u2014 opening your email app instead.';mailtoFallback();});
 });
+/* ---------- return from Stripe Checkout (Step 5) ---------- */
+(function(){
+  var q=new URLSearchParams(window.location.search);
+  var paid=q.get('paid'),cancelled=q.get('cancelled');
+  if(!paid&&!cancelled)return;
+  var no=q.get('order')||'';
+  try{if(!no)no=localStorage.getItem('cuppapanda_pending_order')||'';}catch(e){}
+  var b=document.getElementById('payBanner');
+  if(paid){
+    /* The webhook is what actually marks the order paid in Supabase; here we
+       just thank the customer and tidy up the browser side. */
+    cart=[];saveCart();renderCart();
+    try{localStorage.removeItem('cuppapanda_pending_order');}catch(e){}
+    if(b){b.innerHTML='\ud83c\udf89 <b>Payment received \u2014 thank you!</b> Order <b>'+no+'</b> is confirmed; a confirmation email is on its way.';b.classList.add('show');}
+  }else if(b){
+    b.innerHTML='\ud83d\udc9c Payment cancelled \u2014 your cart is still here when you\u2019re ready.';
+    b.classList.add('show','warn');
+  }
+  try{window.history.replaceState(null,'',window.location.pathname);}catch(e){}
+})();
 /* add-to-cart buttons on every product card */
 document.querySelectorAll('.card').forEach(function(card){
   var h=card.querySelector('h4'),p=card.querySelector('.p');if(!h||!p)return;
