@@ -33,6 +33,20 @@ h2{font-size:23px;margin-bottom:4px}.sub{color:var(--soft);font-size:14px;margin
 .dcard{display:block;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 3px 12px rgba(180,120,140,.12);text-decoration:none;color:var(--ink)}
 .dthumb{position:relative;height:250px;overflow:hidden;background:#fdf3f5}.dthumb img{width:100%;height:100%;object-fit:cover;display:block}
 .dbody{padding:11px 12px 14px}.dbody h4{font-size:14px;line-height:1.35;min-height:38px}.dbody p{color:var(--soft);font-size:12.5px;line-height:1.5;margin-top:3px}.dbody .dnote{color:var(--pink-deep);font-weight:700}
+.pick10-toggle{position:absolute;top:8px;right:8px;z-index:2;background:rgba(255,255,255,.92);color:var(--pink-deep);font-size:11px;font-weight:800;padding:5px 10px;border-radius:999px;cursor:pointer;border:2px solid var(--pink-deep)}
+.pick10-toggle.on{background:var(--pink-deep);color:#fff}
+.pick10bar{display:none;margin-top:14px;background:#fff;border:2px dashed #f3cfd8;border-radius:18px;padding:14px 16px;text-align:center;font-size:14px}
+.pick10bar.show{display:block}
+.pick10bar b{color:var(--pink-deep)}
+.pick10bar .btn{margin-top:10px}
+#coForm label{font-size:12px;color:var(--soft);display:block;margin:2px 0 3px}
+.memberbox{margin-top:18px;border-top:1px dashed rgba(255,255,255,.35);padding-top:16px}
+.memberbox p{color:#d8ccd1;font-size:13.5px;margin:4px 0 10px;line-height:1.55}
+.memberbox select{padding:11px 14px;border-radius:999px;border:none;width:min(280px,72%);font-size:14px;margin:3px 2px;background:#fff}
+.memberbox button{padding:11px 18px;border-radius:999px;border:none;background:var(--pink-deep);color:#fff;font-weight:700;margin:3px 2px;cursor:pointer}
+.memberbox .mmsg{font-size:13.5px;color:#ffe3ec;min-height:18px;margin-top:8px;line-height:1.6}
+.memberbox .mmsg a{color:#fff;font-weight:700}
+.memberbox .mmsg b{color:#fff;background:var(--pink-deep);padding:2px 9px;border-radius:6px;letter-spacing:1px}
 .price{font-weight:800;color:var(--pink-deep);margin-top:4px;font-size:16px}
 .price.big{font-size:21px}.price s{color:#c9bcc1;font-weight:400;font-size:13px;margin-left:6px}
 .spot{display:grid;grid-template-columns:1fr 1fr;border-radius:24px;overflow:hidden;background:#fff;box-shadow:0 3px 14px rgba(180,120,140,.14)}
@@ -152,6 +166,10 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 .disc{margin-top:12px;font-size:12.5px;color:var(--soft);line-height:1.55}
 .storyline{margin-top:16px;font-size:13px;color:var(--soft);line-height:1.55}
 .backlink{display:inline-block;margin-top:18px;color:var(--pink-deep);font-weight:700;text-decoration:none;font-size:14px}
+.buybox{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.buybox .btn{border:none;cursor:pointer;font-size:14px}
+.buy-note{width:100%;font-size:13px;color:var(--soft);line-height:1.55;margin:2px 0 0}
+.buy-note a{color:var(--pink-deep);font-weight:700}
 </style></head><body>
 <div class="bar">🎉 Opening soon — New drops every Friday!</div>
 <header><div class="logo"><a href="/" style="text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px"><img src="/images/logo-badge.png" alt="Cuppa Panda logo">Cuppa<span>Panda</span></a></div><nav><a href="/#best">Bestsellers</a><a href="/#merch">Merch</a><a href="/#hero-pick">Journal Kit</a><a href="/#digital">Digital</a><a href="/#blindbox">Blind Box</a><a href="/#treats">Little Treats</a></nav></header>
@@ -170,7 +188,12 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
   <li>A4, printable PDF</li>
 </ul>
 <p class="sample">🎁 Book 01 colouring book: 9 pages (cover + 8 pages to colour)</p>
-<div class="soon">📬 <b>Full version coming soon.</b> Join the <a href="/#club">Panda Club</a> for first access — 15% off your first order, plus first look at new drops.</div>
+<div class="buybox">
+<button class="btn" type="button" id="buySingle">Buy this download — $4.99 · get 1 free</button>
+<button class="btn ghost" type="button" id="pick10toggle">＋ Add to Pick 10</button>
+<p class="buy-note">Pick 10: choose any 10 downloads for $9.99. <a href="/#digital">See all 10 →</a></p>
+</div>
+<div class="soon">💌 <b>Panda Club members</b> get 1 free download + a referral code (share it and you both get a free download). <a href="/#club">Join or claim yours →</a></div>
 
 <p class="storyline">🐼 From the Miniature World story: Momo — The Teacup Spins Too Fast</p>
 <a class="backlink" href="/#digital">← Back to all digital downloads</a>
@@ -178,4 +201,28 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 </div>
 </div>
 <footer><b>🐼 CuppaPanda.com</b><br>UK delivery 5–10 working days · Ireland &amp; EU 7–12 working days · Free delivery over £35 / €40 / $45<br>14-day returns on unused items · Blind boxes are final sale once opened<br>Contact: <a href="mailto:hello@cuppapanda.com">hello@cuppapanda.com</a> · <a href="https://www.instagram.com/cuppapanda.shop" target="_blank" rel="noopener">Instagram @cuppapanda</a> · <a href="https://www.tiktok.com/@cuppapanda" target="_blank" rel="noopener">TikTok @cuppapanda</a><br>© 2026 Cuppa Panda. Run with love (and parental supervision).</footer>
+
+<script>
+(function(){
+  var SKU='digital-colouring-pages', NAME='Colouring Pages', USD=4.99;
+  var cart=[];try{cart=JSON.parse(localStorage.getItem('cuppapanda_cart')||'[]');}catch(e){cart=[];}
+  function saveCart(){try{localStorage.setItem('cuppapanda_cart',JSON.stringify(cart));}catch(e){}}
+  var pick10=[];try{pick10=JSON.parse(localStorage.getItem('cuppapanda_pick10')||'[]');}catch(e){pick10=[];}
+  function savePick10(){try{localStorage.setItem('cuppapanda_pick10',JSON.stringify(pick10));}catch(e){}}
+  var buy=document.getElementById('buySingle');
+  if(buy){buy.addEventListener('click',function(){
+    var f=null;cart.forEach(function(i){if(i.name===NAME)f=i;});
+    if(f){f.qty=1;}else{cart.push({name:NAME,usd:USD,qty:1});}
+    saveCart();buy.textContent='Added to cart ✓ — check out on the homepage';buy.disabled=true;
+  });}
+  var tog=document.getElementById('pick10toggle');
+  function paint(){if(!tog)return;var on=pick10.indexOf(SKU)>-1;tog.textContent=on?'✓ In your Pick 10 ('+pick10.length+'/10)':'＋ Add to Pick 10';}
+  if(tog){tog.addEventListener('click',function(){
+    var i=pick10.indexOf(SKU);
+    if(i>-1){pick10.splice(i,1);}else{if(pick10.length>=10){tog.textContent='Pick 10 is full (10/10)';return;}pick10.push(SKU);}
+    savePick10();paint();
+  });paint();}
+})();
+</script>
 </body></html>
+

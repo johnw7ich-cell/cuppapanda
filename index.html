@@ -33,6 +33,20 @@ h2{font-size:23px;margin-bottom:4px}.sub{color:var(--soft);font-size:14px;margin
 .dcard{display:block;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 3px 12px rgba(180,120,140,.12);text-decoration:none;color:var(--ink)}
 .dthumb{position:relative;height:250px;overflow:hidden;background:#fdf3f5}.dthumb img{width:100%;height:100%;object-fit:cover;display:block}
 .dbody{padding:11px 12px 14px}.dbody h4{font-size:14px;line-height:1.35;min-height:38px}.dbody p{color:var(--soft);font-size:12.5px;line-height:1.5;margin-top:3px}.dbody .dnote{color:var(--pink-deep);font-weight:700}
+.pick10-toggle{position:absolute;top:8px;right:8px;z-index:2;background:rgba(255,255,255,.92);color:var(--pink-deep);font-size:11px;font-weight:800;padding:5px 10px;border-radius:999px;cursor:pointer;border:2px solid var(--pink-deep)}
+.pick10-toggle.on{background:var(--pink-deep);color:#fff}
+.pick10bar{display:none;margin-top:14px;background:#fff;border:2px dashed #f3cfd8;border-radius:18px;padding:14px 16px;text-align:center;font-size:14px}
+.pick10bar.show{display:block}
+.pick10bar b{color:var(--pink-deep)}
+.pick10bar .btn{margin-top:10px}
+#coForm label{font-size:12px;color:var(--soft);display:block;margin:2px 0 3px}
+.memberbox{margin-top:18px;border-top:1px dashed rgba(255,255,255,.35);padding-top:16px}
+.memberbox p{color:#d8ccd1;font-size:13.5px;margin:4px 0 10px;line-height:1.55}
+.memberbox select{padding:11px 14px;border-radius:999px;border:none;width:min(280px,72%);font-size:14px;margin:3px 2px;background:#fff}
+.memberbox button{padding:11px 18px;border-radius:999px;border:none;background:var(--pink-deep);color:#fff;font-weight:700;margin:3px 2px;cursor:pointer}
+.memberbox .mmsg{font-size:13.5px;color:#ffe3ec;min-height:18px;margin-top:8px;line-height:1.6}
+.memberbox .mmsg a{color:#fff;font-weight:700}
+.memberbox .mmsg b{color:#fff;background:var(--pink-deep);padding:2px 9px;border-radius:6px;letter-spacing:1px}
 .price{font-weight:800;color:var(--pink-deep);margin-top:4px;font-size:16px}
 .price.big{font-size:21px}.price s{color:#c9bcc1;font-weight:400;font-size:13px;margin-left:6px}
 .spot{display:grid;grid-template-columns:1fr 1fr;border-radius:24px;overflow:hidden;background:#fff;box-shadow:0 3px 14px rgba(180,120,140,.14)}
@@ -143,21 +157,22 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 <section id="merch"><h2>Cuppa Panda merch 🧸</h2><p class="sub">Wear the panda! Made to order — printed just for you, ages 14–18 favourites</p><div class="grid"><div class="card"><div class="thumb" style="cursor:default"><img src="images/catalog-models-beanie.jpg" alt="Panda Beanie — Fluffy Face"><span class="badge">NEW</span></div><div class="body"><h4>Panda Beanie — Fluffy Face</h4><div class="price"><span class="p" data-usd="24.99">$24.99</span></div><p style="color:var(--soft);font-size:12px;margin-top:3px">Pink · Mint · Cream · One size</p></div></div><div class="card"><div class="thumb" style="cursor:default"><img src="images/catalog-models-cap.jpg" alt="Panda Cap — Embroidered"><span class="badge">NEW</span></div><div class="body"><h4>Panda Cap — Embroidered</h4><div class="price"><span class="p" data-usd="26.99">$26.99</span></div><p style="color:var(--soft);font-size:12px;margin-top:3px">Pink · Cream · Adjustable</p></div></div><div class="card"><div class="thumb" style="cursor:default"><img src="images/merch-hoodie-pink.jpg" alt="Cuppa Panda Hoodie — Pink"><span class="badge">NEW MERCH</span></div><div class="body"><h4>Cuppa Panda Hoodie — Pink</h4><div class="price"><span class="p" data-usd="44.99">$44.99</span></div><p style="color:var(--soft);font-size:12px;margin-top:3px">Sizes XS–XL · Oversized fit · Big front print</p></div></div><div class="card"><div class="thumb" style="cursor:default"><img src="images/merch-sweatshirt-cream.jpg" alt="Panda Sweatshirt — Cream"></div><div class="body"><h4>Panda Sweatshirt — Cream</h4><div class="price"><span class="p" data-usd="39.99">$39.99</span></div><p style="color:var(--soft);font-size:12px;margin-top:3px">Sizes XS–XL · Embroidered panda chest logo</p></div></div><div class="card"><div class="thumb" style="cursor:default"><img src="images/catalog-models-backpack.jpg" alt="Cuppa Panda Backpack — Pink"></div><div class="body"><h4>Cuppa Panda Backpack — Pink</h4><div class="price"><span class="p" data-usd="47.99">$47.99</span></div><p style="color:var(--soft);font-size:12px;margin-top:3px">As worn by Mia · Panda-in-cup print</p></div></div><div class="card"><div class="thumb" style="cursor:default"><img src="images/merch-socks-3pairs.jpg" alt="Panda Socks — 3 Pairs"></div><div class="body"><h4>Panda Socks — 3 Pairs</h4><div class="price"><span class="p" data-usd="16.99">$16.99</span></div><p style="color:var(--soft);font-size:12px;margin-top:3px">Pink / Cream / Mint · One size (UK 3–6)</p></div></div></div></section>
 <section id="hero-pick"><div class="spot"><div class="vis" onclick="flip(this)"><img loading="lazy" decoding="async" src="images/A-journal-kit-1.jpg" data-alt="images/A-journal-kit-2.jpg" alt="DIY Journal Kit"><span class="flip-hint">👆 tap for angle 2</span></div><div class="txt"><p style="color:var(--pink-deep);font-weight:800;letter-spacing:1px;font-size:13px">★ HERO PICK OF THE MONTH</p><h3>DIY Journal Kit — Everything in One Box</h3><p>A journal book, stickers, washi tapes and cute pens, all in one gift-ready box. Perfect for diary nights, bullet journaling and bestie gifts.</p><div class="price big"><span class="p" data-usd="18.99">$18.99</span> <s><span class="p" data-usd="22.99">$22.99</span></s></div><p style="margin-top:14px"><button class="btn" type="button" id="heroAdd" style="border:none;cursor:pointer;font-size:15px">Add to cart 🛒</button></p></div></div></section>
 <section id="digital"><h2>Digital downloads ✨</h2><p class="sub">Print at home — instant, no shipping, no waiting. Made by Cuppa Panda, starring the Miniature World friends.</p><div class="grid">
-<a class="dcard" href="/digital/panda-desk-journal"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-journal.jpg" alt="Panda Desk Journal"><span class="badge mint">DIGITAL</span></div><div class="dbody"><h4>Panda Desk Journal</h4><p>Printable daily journal — A4 + US Letter, with sticker pack &amp; 30-day habit tracker</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
-<a class="dcard" href="/digital/adhd-focus-planner"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-adhd.jpg" alt="ADHD Focus Planner"><span class="badge mint">DIGITAL</span></div><div class="dbody"><h4>ADHD Focus Planner</h4><p>Focus, start-task, brain dump &amp; dopamine menu — one calm page at a time</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
-<a class="dcard" href="/digital/calm-workbook"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-calm.jpg" alt="Panda Calm Desk Workbook"><span class="badge mint">DIGITAL</span></div><div class="dbody"><h4>Panda Calm Desk Workbook</h4><p>30 days, 5–10 minutes a day — gentle self-care for busy days</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
-<a class="dcard" href="/digital/student-planner"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-student.jpg" alt="Student Planner"><span class="badge mint">DIGITAL</span></div><div class="dbody"><h4>Student Planner</h4><p>Printable + Notion — plan study, homework &amp; revision, your way</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
-<a class="dcard" href="/digital/habit-tracker"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-habit.jpg" alt="Habit Tracker"><span class="badge mint">DIGITAL</span></div><div class="dbody"><h4>Habit Tracker</h4><p>30-day challenge pack — one small win a day, with the Miniature World friends</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
-<a class="dcard" href="/digital/digital-sticker-pack"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-stickers.jpg" alt="Digital Sticker Pack"><span class="badge mint">DIGITAL</span></div><div class="dbody"><h4>Digital Sticker Pack</h4><p>500 Miniature World stickers — 10 stories, 10 elements each, 5 stickers each</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
-<a class="dcard" href="/digital/notion-template"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-notion.jpg" alt="Notion Template"><span class="badge mint">DIGITAL</span></div><div class="dbody"><h4>Notion Template</h4><p>Student &amp; life dashboard — plan, track &amp; keep everything in one place</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
-<a class="dcard" href="/digital/junk-journal-kit"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-junk.jpg" alt="Junk Journal Kit"><span class="badge mint">DIGITAL</span></div><div class="dbody"><h4>Junk Journal Kit</h4><p>Cute modern junk journal — cut, stick, keep your little treasures</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
-<a class="dcard" href="/digital/colouring-pages"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-colouring.jpg" alt="Colouring Pages"><span class="badge mint">DIGITAL</span></div><div class="dbody"><h4>Colouring Pages</h4><p>Line art from the Miniature World stories — close-up pages, ready to colour</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
-<a class="dcard" href="/digital/desk-poster-set"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-posters.jpg" alt="Desk Poster Set"><span class="badge mint">DIGITAL</span></div><div class="dbody"><h4>Desk Poster Set</h4><p>10 storybook covers as printable posters — one for each Miniature World story</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
+<a class="dcard" href="/digital/panda-desk-journal"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-journal.jpg" alt="Panda Desk Journal"><span class="badge mint">DIGITAL</span><span class="pick10-toggle" data-sku="digital-panda-desk-journal" role="button" tabindex="0">＋ Pick 10</span></div><div class="dbody"><h4>Panda Desk Journal</h4><p>Printable daily journal — A4 + US Letter, with sticker pack &amp; 30-day habit tracker</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
+<a class="dcard" href="/digital/adhd-focus-planner"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-adhd.jpg" alt="ADHD Focus Planner"><span class="badge mint">DIGITAL</span><span class="pick10-toggle" data-sku="digital-adhd-focus-planner" role="button" tabindex="0">＋ Pick 10</span></div><div class="dbody"><h4>ADHD Focus Planner</h4><p>Focus, start-task, brain dump &amp; dopamine menu — one calm page at a time</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
+<a class="dcard" href="/digital/calm-workbook"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-calm.jpg" alt="Panda Calm Desk Workbook"><span class="badge mint">DIGITAL</span><span class="pick10-toggle" data-sku="digital-calm-workbook" role="button" tabindex="0">＋ Pick 10</span></div><div class="dbody"><h4>Panda Calm Desk Workbook</h4><p>30 days, 5–10 minutes a day — gentle self-care for busy days</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
+<a class="dcard" href="/digital/student-planner"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-student.jpg" alt="Student Planner"><span class="badge mint">DIGITAL</span><span class="pick10-toggle" data-sku="digital-student-planner" role="button" tabindex="0">＋ Pick 10</span></div><div class="dbody"><h4>Student Planner</h4><p>Printable + Notion — plan study, homework &amp; revision, your way</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
+<a class="dcard" href="/digital/habit-tracker"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-habit.jpg" alt="Habit Tracker"><span class="badge mint">DIGITAL</span><span class="pick10-toggle" data-sku="digital-habit-tracker" role="button" tabindex="0">＋ Pick 10</span></div><div class="dbody"><h4>Habit Tracker</h4><p>30-day challenge pack — one small win a day, with the Miniature World friends</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
+<a class="dcard" href="/digital/digital-sticker-pack"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-stickers.jpg" alt="Digital Sticker Pack"><span class="badge mint">DIGITAL</span><span class="pick10-toggle" data-sku="digital-sticker-pack" role="button" tabindex="0">＋ Pick 10</span></div><div class="dbody"><h4>Digital Sticker Pack</h4><p>500 Miniature World stickers — 10 stories, 10 elements each, 5 stickers each</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
+<a class="dcard" href="/digital/notion-template"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-notion.jpg" alt="Notion Template"><span class="badge mint">DIGITAL</span><span class="pick10-toggle" data-sku="digital-notion-template" role="button" tabindex="0">＋ Pick 10</span></div><div class="dbody"><h4>Notion Template</h4><p>Student &amp; life dashboard — plan, track &amp; keep everything in one place</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
+<a class="dcard" href="/digital/junk-journal-kit"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-junk.jpg" alt="Junk Journal Kit"><span class="badge mint">DIGITAL</span><span class="pick10-toggle" data-sku="digital-junk-journal-kit" role="button" tabindex="0">＋ Pick 10</span></div><div class="dbody"><h4>Junk Journal Kit</h4><p>Cute modern junk journal — cut, stick, keep your little treasures</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
+<a class="dcard" href="/digital/colouring-pages"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-colouring.jpg" alt="Colouring Pages"><span class="badge mint">DIGITAL</span><span class="pick10-toggle" data-sku="digital-colouring-pages" role="button" tabindex="0">＋ Pick 10</span></div><div class="dbody"><h4>Colouring Pages</h4><p>Line art from the Miniature World stories — close-up pages, ready to colour</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
+<a class="dcard" href="/digital/desk-poster-set"><div class="dthumb"><img loading="lazy" decoding="async" src="images/digital/digital-posters.jpg" alt="Desk Poster Set"><span class="badge mint">DIGITAL</span><span class="pick10-toggle" data-sku="digital-desk-poster-set" role="button" tabindex="0">＋ Pick 10</span></div><div class="dbody"><h4>Desk Poster Set</h4><p>10 storybook covers as printable posters — one for each Miniature World story</p><p class="dnote">Digital download — instant, no shipping</p></div></a>
+<div class="pick10bar" id="pick10bar"><b>Pick 10 — <span id="pick10count">0</span>/10 selected</b> · <span class="p" data-usd="9.99">$9.99</span><br><span style="color:var(--soft);font-size:13px">Tap ＋ Pick 10 on any 10 downloads, then buy the bundle.</span><br><button class="btn" type="button" id="pick10buy" disabled>Buy Pick 10</button> <button class="btn ghost" type="button" id="pick10clear">Clear</button></div>
 </div></section>
 <section id="blindbox"><h2>How blind boxes work 🎲</h2><p class="sub">Every box is a surprise — collect them all!</p><div class="steps"><div class="step"><div class="n">1</div><b>Pick a series</b><p style="color:var(--soft);font-size:13px;margin-top:4px">Each series has 6–8 designs + 1 secret rare.</p></div><div class="step"><div class="n">2</div><b>Unbox it</b><p style="color:var(--soft);font-size:13px;margin-top:4px">Film your unboxing and tag <a href="https://www.instagram.com/cuppapanda.shop" target="_blank" rel="noopener">@cuppapanda</a>!</p></div><div class="step"><div class="n">3</div><b>Collect &amp; trade</b><p style="color:var(--soft);font-size:13px;margin-top:4px">Got a double? Trade with friends.</p></div></div></section>
 <section id="treats"><h2>Little treats 🍬</h2><p class="sub">Pocket-money friendly picks</p><div class="grid"><div class="card"><div class="thumb" onclick="flip(this)"><img loading="lazy" decoding="async" src="images/J-mochi-squishies-1.jpg" data-alt="images/J-mochi-squishies-2.jpg" alt="Mochi Animal Squishies — 10 pcs"><span class="flip-hint">👆 tap for angle 2</span></div><div class="body"><h4>Mochi Animal Squishies — 10 pcs</h4><div class="price"><span class="p" data-usd="4.49">$4.49</span></div></div></div><div class="card"><div class="thumb" onclick="flip(this)"><img loading="lazy" decoding="async" src="images/K-washi-tape-set-1.jpg" data-alt="images/K-washi-tape-set-2.jpg" alt="Washi Tape Set — 10 Rolls"><span class="flip-hint">👆 tap for angle 2</span></div><div class="body"><h4>Washi Tape Set — 10 Rolls</h4><div class="price"><span class="p" data-usd="6.49">$6.49</span></div></div></div><div class="card"><div class="thumb" onclick="flip(this)"><img loading="lazy" decoding="async" src="images/G-waterproof-sticker-pack-1.jpg" data-alt="images/G-waterproof-sticker-pack-2.jpg" alt="Waterproof Sticker Pack — 50 pcs"><span class="flip-hint">👆 tap for angle 2</span></div><div class="body"><h4>Waterproof Sticker Pack — 50 pcs</h4><div class="price"><span class="p" data-usd="3.49">$3.49</span></div></div></div><div class="card"><div class="thumb" onclick="flip(this)"><img loading="lazy" decoding="async" src="images/I-pastel-highlighters-1.jpg" data-alt="images/I-pastel-highlighters-2.jpg" alt="Pastel Highlighters — 6 Colours"><span class="flip-hint">👆 tap for angle 2</span></div><div class="body"><h4>Pastel Highlighters — 6 Colours</h4><div class="price"><span class="p" data-usd="4.49">$4.49</span></div></div></div></div></section>
 <section><div class="about"><div style="font-size:52px">👧🐼</div><h2 style="margin:8px 0 6px">Hi! Everything here is picked by me</h2><p style="color:#6d6167;max-width:520px;margin:0 auto;line-height:1.6">I started Cuppa Panda because I could never find all my favourite cute things in one place. Every item is tested first — if I don't love it, we don't sell it.</p></div></section>
-<section id="club"><div class="news"><h2 style="color:#fff">Join the Panda Club 💌</h2><p style="color:#d8ccd1;margin:6px 0 16px;font-size:14px">Get 15% off your first order + first look at Friday drops.</p><input type="email" id="newsEmail" placeholder="Your email address"><button type="button" id="newsJoin">Join</button><p class="newsmsg" id="newsMsg"></p></div></section>
+<section id="club"><div class="news"><h2 style="color:#fff">Join the Panda Club 💌</h2><p style="color:#d8ccd1;margin:6px 0 16px;font-size:14px">Get 15% off your first order + first look at Friday drops.</p><input type="email" id="newsEmail" placeholder="Your email address"><button type="button" id="newsJoin">Join</button><p class="newsmsg" id="newsMsg"></p><div class="memberbox"><p><b style="color:#fff">Already a member?</b> Claim your 1 free download, or get your referral code.</p><input type="email" id="memberEmail" placeholder="Your Panda Club email"><select id="memberPick"><option value="">Choose your free download…</option></select><br><button type="button" id="memberClaim">Claim my free download 🎁</button><button type="button" id="memberCode">Get my referral code</button><p class="mmsg" id="memberMsg"></p></div></div></section>
 <footer><b>🐼 CuppaPanda.com</b><br>UK delivery 5–10 working days · Ireland &amp; EU 7–12 working days · Free delivery over £35 / €40 / $45<br>14-day returns on unused items · Blind boxes are final sale once opened<br>Contact: <a href="mailto:hello@cuppapanda.com">hello@cuppapanda.com</a> · <a href="https://www.instagram.com/cuppapanda.shop" target="_blank" rel="noopener">Instagram @cuppapanda</a> · <a href="https://www.tiktok.com/@cuppapanda" target="_blank" rel="noopener">TikTok @cuppapanda</a><br>© 2026 Cuppa Panda. Run with love (and parental supervision).</footer>
 
 
@@ -210,6 +225,11 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
         <option value="Other (Europe)">Other (Europe)</option>
       </select>
       <input id="coPromo" type="text" placeholder="Promo code (e.g. PANDA15)">
+      <input id="coReferral" type="text" placeholder="Referral code (e.g. PANDA-K7Q2M9) — optional">
+      <label for="coBogof" id="coBogofLabel" style="display:none">Your free BOGOF pick — buy 1 get 1 free</label>
+      <select id="coBogof" style="display:none"><option value="">Choose your free download…</option></select>
+      <label for="coRefFree" id="coRefFreeLabel" style="display:none">Your extra free pick (referral +1)</label>
+      <select id="coRefFree" style="display:none"><option value="">Choose your free download…</option></select>
       <p id="coMsg" role="status"></p>
     </div>
     <button id="checkout" type="button">Place order 🐼</button>
@@ -255,6 +275,7 @@ function renderCart(){
   var th=RATES[CUR].th, conv=tot;
   document.getElementById('shipNote').textContent=!cart.length?'Free delivery over '+RATES[CUR].t+'.':(conv>=th?'\ud83c\udf89 You unlocked FREE delivery!':'Add '+RATES[CUR].s+(th-conv).toFixed(2)+' more for free delivery. Delivery is confirmed in your checkout email.');
   document.getElementById('checkout').style.opacity=cart.length?'1':'.5';
+  if(typeof syncFreePicks==='function')syncFreePicks();
 }
 function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('open');}
 function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
@@ -262,7 +283,7 @@ document.getElementById('cartBtn').addEventListener('click',openDrawer);
 document.getElementById('drawerClose').addEventListener('click',closeDrawer);
 document.getElementById('overlay').addEventListener('click',closeDrawer);
 /* ---------- checkout via API (Step 3) ---------- */
-var NAME_TO_SKU={'DIY Journal Kit \u2014 Everything in One Box':'journal-kit','Panda Plush Bag Charm \u2014 15cm':'panda-plush-bag-charm','Capybara Blind Box Figure':'capybara-blind-box','Beaded Phone Strap \u2014 Butterfly & Pearl':'beaded-phone-strap','Slow-Rising Squishy \u2014 Bread Set':'bread-squishy-set','Acetate Claw Clip Set':'acetate-claw-clip-set','Waterproof Sticker Pack \u2014 50 pcs':'waterproof-sticker-pack','Bread Plush Keychain':'bread-plush-keychain','Pastel Highlighters \u2014 6 Colours':'pastel-highlighters','Mochi Animal Squishies \u2014 10 pcs':'mochi-squishies','Washi Tape Set \u2014 10 Rolls':'washi-tape-set','Panda Beanie \u2014 Fluffy Face':'panda-beanie','Panda Cap \u2014 Embroidered':'panda-cap','Cuppa Panda Hoodie \u2014 Pink':'hoodie-pink','Panda Sweatshirt \u2014 Cream':'sweatshirt-cream','Cuppa Panda Backpack \u2014 Pink':'backpack-pink','Panda Socks \u2014 3 Pairs':'panda-socks'};
+var NAME_TO_SKU={'DIY Journal Kit \u2014 Everything in One Box':'journal-kit','Panda Plush Bag Charm \u2014 15cm':'panda-plush-bag-charm','Capybara Blind Box Figure':'capybara-blind-box','Beaded Phone Strap \u2014 Butterfly & Pearl':'beaded-phone-strap','Slow-Rising Squishy \u2014 Bread Set':'bread-squishy-set','Acetate Claw Clip Set':'acetate-claw-clip-set','Waterproof Sticker Pack \u2014 50 pcs':'waterproof-sticker-pack','Bread Plush Keychain':'bread-plush-keychain','Pastel Highlighters \u2014 6 Colours':'pastel-highlighters','Mochi Animal Squishies \u2014 10 pcs':'mochi-squishies','Washi Tape Set \u2014 10 Rolls':'washi-tape-set','Panda Beanie \u2014 Fluffy Face':'panda-beanie','Panda Cap \u2014 Embroidered':'panda-cap','Cuppa Panda Hoodie \u2014 Pink':'hoodie-pink','Panda Sweatshirt \u2014 Cream':'sweatshirt-cream','Cuppa Panda Backpack \u2014 Pink':'backpack-pink','Panda Socks \u2014 3 Pairs':'panda-socks','Panda Desk Journal':'digital-panda-desk-journal','ADHD Focus Planner':'digital-adhd-focus-planner','Panda Calm Desk Workbook':'digital-calm-workbook','Student Planner':'digital-student-planner','Habit Tracker':'digital-habit-tracker','Digital Sticker Pack':'digital-sticker-pack','Notion Template':'digital-notion-template','Junk Journal Kit':'digital-junk-journal-kit','Colouring Pages':'digital-colouring-pages','Desk Poster Set':'digital-desk-poster-set','Pick 10 Bundle \u2014 10 digital downloads':'digital-pick-10'};
 function mailtoFallback(){
   var lines=cart.map(function(i){return i.qty+' x '+i.name+' \u2014 '+fmt(unit(i.usd)*i.qty);});
   var body='Hi Cuppa Panda! I would like to order:\n\n'+lines.join('\n')+'\n\nSubtotal: '+fmt(cartTotalCur())+' ('+CUR+')\n\nMy name: \nDelivery address: \n';
@@ -277,7 +298,12 @@ document.getElementById('checkout').addEventListener('click',function(){
   cart.forEach(function(i){var sku=NAME_TO_SKU[i.name];if(!sku){unmapped=true;}else{items.push({sku:sku,qty:i.qty});}});
   if(unmapped){mailtoFallback();return;}
   btn.disabled=true;btn.textContent='Placing order\u2026';msg.textContent='';
-  fetch('/api/checkout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({items:items,currency:CUR,country:document.getElementById('coCountry').value,email:email,name:document.getElementById('coName').value.trim()||null,promo:document.getElementById('coPromo').value.trim()||null})})
+  var payload={items:items,currency:CUR,country:document.getElementById('coCountry').value,email:email,name:document.getElementById('coName').value.trim()||null,promo:document.getElementById('coPromo').value.trim()||null};
+  var refCode=document.getElementById('coReferral').value.trim();if(refCode)payload.referral_code=refCode;
+  var bf=document.getElementById('coBogof').value;if(bf)payload.bogof_free=bf;
+  var rf=document.getElementById('coRefFree').value;if(rf)payload.referral_free=rf;
+  if(cart.some(function(i){return i.name===DIGITAL_BUNDLE.name;})&&pick10.length===10)payload.pick10=pick10.slice();
+  fetch('/api/checkout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)})
   .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d};});})
   .then(function(res){
     btn.disabled=false;btn.textContent='Place order \ud83d\udc3c';
@@ -296,7 +322,7 @@ document.getElementById('checkout').addEventListener('click',function(){
     if(d.free_shipping)txt+=' with FREE delivery';
     txt+='. We will email '+email+' to confirm your order and send a secure payment link.';
     msg.innerHTML=txt;
-    cart=[];saveCart();renderCart();
+    cart=[];saveCart();renderCart();pick10=[];savePick10();renderPick10();
   })
   .catch(function(){btn.disabled=false;btn.textContent='Place order \ud83d\udc3c';msg.textContent='Online checkout is unavailable right now \u2014 opening your email app instead.';mailtoFallback();});
 });
@@ -311,7 +337,7 @@ document.getElementById('checkout').addEventListener('click',function(){
   if(paid){
     /* The webhook is what actually marks the order paid in Supabase; here we
        just thank the customer and tidy up the browser side. */
-    cart=[];saveCart();renderCart();
+    cart=[];saveCart();renderCart();pick10=[];savePick10();renderPick10();
     try{localStorage.removeItem('cuppapanda_pending_order');}catch(e){}
     if(b){b.innerHTML='\ud83c\udf89 <b>Payment received \u2014 thank you!</b> Order <b>'+no+'</b> is confirmed; a confirmation email is on its way.';b.classList.add('show');}
   }else if(b){
@@ -333,12 +359,12 @@ if(heroBtn){heroBtn.addEventListener('click',function(){var s=document.querySele
 function joinClub(){
   var inp=document.getElementById('newsEmail'),msg=document.getElementById('newsMsg'),v=inp.value.trim();
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){msg.textContent='Please enter a valid email address \ud83d\udc9c';return;}
-  var done=function(){msg.innerHTML='You are in! \ud83c\udf89 Your 15% off code is <b>PANDA15</b> \u2014 use it on your first order.';inp.value='';};
+  var done=function(refCode){var t='You are in! 🎉 Your 15% off code is <b>PANDA15</b> — use it on your first order.';if(refCode){t+=' Your referral code is <b>'+refCode+'</b> — share it and you both get a free download.';}msg.innerHTML=t;inp.value='';};
   /* Step 3: store the signup in Supabase via /api/subscribe.
      Fallback keeps the old browser-only behaviour if the API is unreachable. */
   fetch('/api/subscribe',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:v})})
   .then(function(r){if(!r.ok)throw new Error('api');return r.json();})
-  .then(function(){done();})
+  .then(function(d){done(d&&d.referral_code);})
   .catch(function(){
     try{var list=JSON.parse(localStorage.getItem('cuppapanda_club')||'[]');if(list.indexOf(v)===-1){list.push(v);localStorage.setItem('cuppapanda_club',JSON.stringify(list));}}catch(e){}
     done();
@@ -346,6 +372,86 @@ function joinClub(){
 }
 document.getElementById('newsJoin').addEventListener('click',joinClub);
 document.getElementById('newsEmail').addEventListener('keydown',function(e){if(e.key==='Enter'){joinClub();}});
+/* ---------- digital program: Pick 10, referral code, member free claim ---------- */
+var DIGITAL_SINGLES=[{sku:'digital-panda-desk-journal',name:'Panda Desk Journal'},{sku:'digital-adhd-focus-planner',name:'ADHD Focus Planner'},{sku:'digital-calm-workbook',name:'Panda Calm Desk Workbook'},{sku:'digital-student-planner',name:'Student Planner'},{sku:'digital-habit-tracker',name:'Habit Tracker'},{sku:'digital-sticker-pack',name:'Digital Sticker Pack'},{sku:'digital-notion-template',name:'Notion Template'},{sku:'digital-junk-journal-kit',name:'Junk Journal Kit'},{sku:'digital-colouring-pages',name:'Colouring Pages'},{sku:'digital-desk-poster-set',name:'Desk Poster Set'}];
+var DIGITAL_BUNDLE={sku:'digital-pick-10',name:'Pick 10 Bundle — 10 digital downloads',usd:9.99};
+var DIGITAL_SINGLE_NAMES={};DIGITAL_SINGLES.forEach(function(s){DIGITAL_SINGLE_NAMES[s.name]=s.sku;});
+var pick10=[];try{pick10=JSON.parse(localStorage.getItem('cuppapanda_pick10')||'[]');}catch(e){pick10=[];}
+function savePick10(){try{localStorage.setItem('cuppapanda_pick10',JSON.stringify(pick10));}catch(e){}}
+function renderPick10(){
+  document.querySelectorAll('.pick10-toggle').forEach(function(t){var on=pick10.indexOf(t.dataset.sku)>-1;t.classList.toggle('on',on);t.textContent=on?'✓ Picked':'＋ Pick 10';});
+  var bar=document.getElementById('pick10bar');if(!bar)return;
+  document.getElementById('pick10count').textContent=pick10.length;
+  bar.classList.toggle('show',pick10.length>0);
+  document.getElementById('pick10buy').disabled=pick10.length!==10;
+}
+function togglePick10(sku){
+  var i=pick10.indexOf(sku);
+  if(i>-1){pick10.splice(i,1);}
+  else{if(pick10.length>=10)return;pick10.push(sku);}
+  savePick10();renderPick10();
+}
+document.querySelectorAll('.pick10-toggle').forEach(function(t){
+  t.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();togglePick10(t.dataset.sku);});
+  t.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();togglePick10(t.dataset.sku);}});
+});
+var pick10buy=document.getElementById('pick10buy');
+if(pick10buy){pick10buy.addEventListener('click',function(){if(pick10.length!==10)return;if(!cart.some(function(i){return i.name===DIGITAL_BUNDLE.name;})){addToCart(DIGITAL_BUNDLE.name,DIGITAL_BUNDLE.usd);}else{openDrawer();}});}
+var pick10clear=document.getElementById('pick10clear');
+if(pick10clear){pick10clear.addEventListener('click',function(){pick10=[];savePick10();renderPick10();});}
+function fillFreePick(sel){
+  if(!sel||sel.options.length>1)return;
+  DIGITAL_SINGLES.forEach(function(s){var o=document.createElement('option');o.value=s.sku;o.textContent=s.name;sel.appendChild(o);});
+}
+function syncFreePicks(){
+  if(typeof DIGITAL_SINGLE_NAMES==='undefined'||typeof pick10==='undefined')return;
+  var bogof=document.getElementById('coBogof'),bogofL=document.getElementById('coBogofLabel');
+  var refF=document.getElementById('coRefFree'),refL=document.getElementById('coRefFreeLabel');
+  if(!bogof||!refF)return;
+  fillFreePick(bogof);fillFreePick(refF);
+  var singles=cart.filter(function(i){return DIGITAL_SINGLE_NAMES[i.name]&&i.qty===1;});
+  var hasBundle=cart.some(function(i){return i.name===DIGITAL_BUNDLE.name;});
+  var showBogof=singles.length===1&&!hasBundle;
+  bogof.style.display=showBogof?'':'none';bogofL.style.display=showBogof?'':'none';
+  if(!showBogof)bogof.value='';
+  var ref=document.getElementById('coReferral').value.trim();
+  var showRef=ref.length>0;
+  refF.style.display=showRef?'':'none';refL.style.display=showRef?'':'none';
+  if(!showRef)refF.value='';
+  if(!hasBundle&&pick10.length){pick10=[];savePick10();renderPick10();}
+}
+var coReferral=document.getElementById('coReferral');
+if(coReferral){coReferral.addEventListener('input',syncFreePicks);}
+var memberPick=document.getElementById('memberPick');
+fillFreePick(memberPick);
+function memberMsg(html){var m=document.getElementById('memberMsg');if(m)m.innerHTML=html;}
+var memberClaim=document.getElementById('memberClaim');
+if(memberClaim){memberClaim.addEventListener('click',function(){
+  var em=document.getElementById('memberEmail').value.trim(),sku=memberPick.value;
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){memberMsg('Please enter your Panda Club email 💌');return;}
+  if(!sku){memberMsg('Choose which download you would like 🎁');return;}
+  memberMsg('Claiming your free download…');
+  fetch('/api/claim-free',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:em,sku:sku})})
+  .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d};});})
+  .then(function(res){if(!res.ok){memberMsg((res.d&&res.d.error)||'Sorry, that did not work.');return;}memberMsg('Your free download is ready! <a href="'+res.d.url+'" target="_blank" rel="noopener">Download it here</a> (link works for 1 hour) 🎉');})
+  .catch(function(){memberMsg('Something went wrong — please try again or email us.');});
+});}
+var memberCode=document.getElementById('memberCode');
+if(memberCode){memberCode.addEventListener('click',function(){
+  var em=document.getElementById('memberEmail').value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){memberMsg('Please enter your Panda Club email 💌');return;}
+  memberMsg('Looking up your code…');
+  fetch('/api/referral-code',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:em})})
+  .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d};});})
+  .then(function(res){
+    if(!res.ok){memberMsg((res.d&&res.d.error)||'Sorry, that did not work.');return;}
+    fetch('/api/my-credits?email='+encodeURIComponent(em)).then(function(r){return r.json();}).then(function(c){
+      memberMsg('Your referral code is <b>'+res.d.code+'</b> — share it and you both get a free download. You have <b>'+(c.credits||0)+'</b> free download credit'+((c.credits||0)===1?'':'s')+' and <b>'+(c.referrals_granted||0)+'</b> friend'+((c.referrals_granted||0)===1?'':'s')+' who bought with your code.');
+    }).catch(function(){memberMsg('Your referral code is <b>'+res.d.code+'</b> — share it and you both get a free download.');});
+  })
+  .catch(function(){memberMsg('Something went wrong — please try again or email us.');});
+});}
+renderPick10();syncFreePicks();
 
 
 /* ---------- product detail (PDP) ---------- */

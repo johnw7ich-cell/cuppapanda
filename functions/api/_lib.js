@@ -45,6 +45,56 @@ export async function sb(env, path, options = {}) {
   return text ? JSON.parse(text) : null;
 }
 
+// Digital program (Series 1, 2026-11-11): the 10 digital singles + the bundle.
+// Customer prices are $5 a single / $10 Pick 10 (usd_base 4.99 / 9.99 —
+// the charm rule makes them display as $4.99 / $9.99 in USD).
+export const DIGITAL_BUNDLE = 'digital-pick-10';
+export const DIGITAL_SINGLES = [
+  'digital-panda-desk-journal', 'digital-adhd-focus-planner', 'digital-calm-workbook',
+  'digital-student-planner', 'digital-habit-tracker', 'digital-sticker-pack',
+  'digital-notion-template', 'digital-junk-journal-kit', 'digital-colouring-pages',
+  'digital-desk-poster-set',
+];
+export const isDigitalSingle = sku => DIGITAL_SINGLES.includes(sku);
+
+// Referral codes look like PANDA-K7Q2M9 (no 0/O/1/I/L, so they read cleanly
+// in a screenshot or a text message).
+const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+export function generateReferralCode() {
+  const bytes = new Uint8Array(6);
+  crypto.getRandomValues(bytes);
+  let code = 'PANDA-';
+  for (const b of bytes) code += CODE_ALPHABET[b % CODE_ALPHABET.length];
+  return code;
+}
+
+export const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || '').trim());
+
+// Credit ledger: every grant/redeem is an auditable row, and download_credits
+// holds the spendable balance. This is read-modify-write (no atomic increment
+// over PostgREST); at this shop's volume that is fine, and the ledger is the
+// source of truth if a balance ever needs rebuilding.
+export async function grantCredit(env, email, delta, source, ref) {
+  const rows = await sb(env, `download_credits?email=eq.${encodeURIComponent(email)}&select=email,balance`);
+  const balance = (rows[0] ? rows[0].balance : 0) + delta;
+  if (balance < 0) throw new Error('Not enough download credits');
+  await sb(env, 'download_credits', {
+    method: 'POST',
+    headers: { Prefer: 'resolution=merge-duplicates' },
+    body: JSON.stringify({ email, balance, updated_at: new Date().toISOString() }),
+  });
+  await sb(env, 'credit_ledger', {
+    method: 'POST',
+    body: JSON.stringify({ email, delta, source, ref: ref || null }),
+  });
+  return balance;
+}
+
+export async function getBalance(env, email) {
+  const rows = await sb(env, `download_credits?email=eq.${encodeURIComponent(email)}&select=balance`);
+  return rows[0] ? rows[0].balance : 0;
+}
+
 export function orderNo() {
   const d = new Date();
   const ymd = `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}`;
