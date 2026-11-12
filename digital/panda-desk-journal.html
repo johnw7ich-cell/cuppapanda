@@ -214,7 +214,7 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
   if(buy){buy.addEventListener('click',function(){
     var f=null;cart.forEach(function(i){if(i.name===NAME)f=i;});
     if(f){f.qty=1;}else{cart.push({name:NAME,usd:USD,qty:1});}
-    saveCart();buy.textContent='Added to cart ✓ — check out on the homepage';buy.disabled=true;
+    saveCart();buy.textContent='Added ✓ — taking you to checkout…';try{localStorage.setItem('cuppapanda_open_cart','1');}catch(e){}window.location.href='/';
   });}
   var tog=document.getElementById('pick10toggle');
   function paint(){if(!tog)return;var on=pick10.indexOf(SKU)>-1;tog.textContent=on?'✓ In your Pick 10 ('+pick10.length+'/10)':'＋ Add to Pick 10';}
