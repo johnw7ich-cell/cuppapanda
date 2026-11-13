@@ -172,7 +172,7 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 .buy-note a{color:var(--pink-deep);font-weight:700}
 </style></head><body>
 <div class="bar">🎉 Opening soon — New drops every Friday!</div>
-<header><div class="logo"><a href="/" style="text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px"><img src="/images/logo-badge.png" alt="Cuppa Panda logo">Cuppa<span>Panda</span></a></div><nav><a href="/#best">Bestsellers</a><a href="/#merch">Merch</a><a href="/#hero-pick">Journal Kit</a><a href="/#digital">Digital</a><a href="/#blindbox">Blind Box</a><a href="/#treats">Little Treats</a></nav></header>
+<header><div class="logo"><a href="/" style="text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px"><img src="/images/logo-badge.png" alt="Cuppa Panda logo">Cuppa<span>Panda</span></a></div><nav><a href="/#best">Bestsellers</a><a href="/#merch">Merch</a><a href="/#hero-pick">Journal Kit</a><a href="/#digital">Digital</a><a href="/#blindbox">Blind Box</a><a href="/#treats">Little Treats</a></nav><div class="curry"><button data-cur="GBP" class="on">£ GBP</button><button data-cur="EUR">€ EUR</button><button data-cur="USD">$ USD</button></div></header>
 <div class="dpage">
 <p class="crumb"><a href="/">Home</a> &nbsp;›&nbsp; <a href="/#digital">Digital downloads</a> &nbsp;›&nbsp; Habit Tracker</p>
 <div class="dhero">
@@ -190,9 +190,9 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 </ul>
 <p class="sample">🎁 Free sample: 2 pages</p>
 <div class="buybox">
-<button class="btn" type="button" id="buySingle">Buy this download — $4.99 · get 1 free</button>
+<button class="btn" type="button" id="buySingle">Buy this download — <span class="p" data-usd="4.99">£3.99</span> · get 1 free</button>
 <button class="btn ghost" type="button" id="pick10toggle">＋ Add to Pick 10</button>
-<p class="buy-note">Pick 10: choose any 10 downloads for $9.99. <a href="/#digital">See all 10 →</a></p>
+<p class="buy-note">Pick 10: choose any 10 downloads for <span class="p" data-usd="9.99">£7.99</span>. <a href="/#digital">See all 10 →</a></p>
 </div>
 <div class="soon">💌 <b>Panda Club members</b> get 1 free download + a referral code (share it and you both get a free download). <a href="/#club">Join or claim yours →</a></div>
 
@@ -205,6 +205,12 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 
 <script>
 (function(){
+  var RATES={GBP:{r:0.75,s:'£'},EUR:{r:0.86,s:'€'},USD:{r:1,s:'$'}};
+  var CUR='GBP';try{var _c=localStorage.getItem('cuppapanda_cur');if(RATES[_c])CUR=_c;}catch(e){}
+  function charm(usd){var v=usd*RATES[CUR].r;return RATES[CUR].s+(Math.floor(v)+0.99).toFixed(2);}
+  function setCur(c){CUR=c;try{localStorage.setItem('cuppapanda_cur',c);}catch(e){}document.querySelectorAll('.p').forEach(function(el){el.textContent=charm(parseFloat(el.dataset.usd));});document.querySelectorAll('.curry button').forEach(function(b){b.classList.toggle('on',b.dataset.cur===c);});}
+  document.querySelectorAll('.curry button').forEach(function(b){b.addEventListener('click',function(){setCur(b.dataset.cur);});});
+  setCur(CUR);
   var SKU='digital-habit-tracker', NAME='Habit Tracker', USD=4.99;
   var cart=[];try{cart=JSON.parse(localStorage.getItem('cuppapanda_cart')||'[]');}catch(e){cart=[];}
   function saveCart(){try{localStorage.setItem('cuppapanda_cart',JSON.stringify(cart));}catch(e){}}

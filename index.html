@@ -250,12 +250,12 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 <script>
 function flip(el){var img=el.querySelector('img');var t=img.getAttribute('src');img.setAttribute('src',img.dataset.alt);img.dataset.alt=t;}
 var RATES={GBP:{r:0.75,s:'\u00a3',t:'\u00a335',th:35},EUR:{r:0.86,s:'\u20ac',t:'\u20ac40',th:40},USD:{r:1,s:'$',t:'$45',th:45}};
-var CUR='GBP';
+var CUR='GBP';try{var _c=localStorage.getItem('cuppapanda_cur');if(RATES[_c])CUR=_c;}catch(e){}
 function charm(usd){var v=usd*RATES[CUR].r;return RATES[CUR].s+(Math.floor(v)+0.99).toFixed(2);}
 function unit(usd){return Math.floor(usd*RATES[CUR].r)+0.99;}
 function fmt(v){return RATES[CUR].s+v.toFixed(2);}
 function money(usd){return fmt(unit(usd));}
-function setCur(c){CUR=c;var R=RATES[c];document.querySelectorAll('.p').forEach(function(el){el.textContent=charm(parseFloat(el.dataset.usd));});document.getElementById('thresh').textContent=R.t;document.querySelectorAll('.curry button').forEach(function(b){b.classList.toggle('on',b.dataset.cur===c);});renderCart();}
+function setCur(c){CUR=c;try{localStorage.setItem('cuppapanda_cur',c);}catch(e){}var R=RATES[c];document.querySelectorAll('.p').forEach(function(el){el.textContent=charm(parseFloat(el.dataset.usd));});document.getElementById('thresh').textContent=R.t;document.querySelectorAll('.curry button').forEach(function(b){b.classList.toggle('on',b.dataset.cur===c);});renderCart();}
 document.querySelectorAll('.curry button').forEach(function(b){b.addEventListener('click',function(){setCur(b.dataset.cur);});});
 /* ---------- cart ---------- */
 var cart=[];try{cart=JSON.parse(localStorage.getItem('cuppapanda_cart')||'[]');}catch(e){cart=[];}
@@ -273,7 +273,8 @@ function renderCart(){
   else{box.innerHTML=cart.map(function(i){return '<div class="crow"><div><div class="nm">'+i.name+'</div><div class="qty"><button type="button" onclick="changeQty(\''+i.name.replace(/'/g,"\\'")+'\',-1)">\u2212</button><span>'+i.qty+'</span><button type="button" onclick="changeQty(\''+i.name.replace(/'/g,"\\'")+'\',1)">+</button><button type="button" class="rm" onclick="removeItem(\''+i.name.replace(/'/g,"\\'")+'\')">remove</button></div></div><div class="pr">'+fmt(unit(i.usd)*i.qty)+'</div></div>';}).join('');}
   var tot=cartTotalCur();document.getElementById('subTotal').textContent=fmt(tot);
   var th=RATES[CUR].th, conv=tot;
-  document.getElementById('shipNote').textContent=!cart.length?'Free delivery over '+RATES[CUR].t+'.':(conv>=th?'\ud83c\udf89 You unlocked FREE delivery!':'Add '+RATES[CUR].s+(th-conv).toFixed(2)+' more for free delivery. Delivery is confirmed in your checkout email.');
+  var allDigital=cart.length&&cart.every(function(i){return (typeof DIGITAL_SINGLE_NAMES!=='undefined'&&DIGITAL_SINGLE_NAMES[i.name])||i.name==='Pick 10 Bundle \u2014 10 digital downloads';});
+  document.getElementById('shipNote').textContent=!cart.length?'Free delivery over '+RATES[CUR].t+'.':(allDigital?'Digital downloads \u2014 no delivery needed. Your download links arrive after payment.':(conv>=th?'\ud83c\udf89 You unlocked FREE delivery!':'Add '+RATES[CUR].s+(th-conv).toFixed(2)+' more for free delivery. Delivery is confirmed in your checkout email.'));
   document.getElementById('checkout').style.opacity=cart.length?'1':'.5';
   if(typeof syncFreePicks==='function')syncFreePicks();
 }
