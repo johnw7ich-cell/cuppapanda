@@ -9,7 +9,7 @@ import { json } from './_lib.js';
 const FAQS = [
   { id: 'delivery-time', keys: ['deliver', 'shipping time', 'how long', 'arrive', 'postage time'],
     q: 'How long does delivery take?',
-    a: 'UK: 5–10 working days. Ireland & EU: 7–12 working days. Merch is made to order first (5–10 working days to make), then shipped. We ship to the UK, Ireland & Europe.' },
+    a: 'UK: 5–10 working days. Ireland & EU: 7–12 working days. Merch is made to order first (5–10 working days to make), then shipped. We ship to the UK, Ireland, Europe, the US & worldwide.' },
   { id: 'free-delivery', keys: ['free delivery', 'free shipping', 'postage cost', 'shipping cost', 'delivery cost'],
     q: 'How much is delivery?',
     a: 'Delivery is FREE over £35 / €40 / $45. Below that, we confirm the postage with your order by email.' },
