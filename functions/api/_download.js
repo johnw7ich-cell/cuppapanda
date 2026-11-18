@@ -35,6 +35,8 @@ export const DIGITAL_FILES = {
   'digital-junk-journal-kit': { key: 'digital/junk-journal-kit.pdf', file: 'junk-journal-kit-free-sample.pdf' },
   'digital-colouring-pages': { key: 'digital/colouring-pages.pdf', file: 'colouring-pages-free-sample.pdf' },
   'digital-desk-poster-set': { key: 'digital/desk-poster-set.pdf', file: 'desk-poster-set-free-sample.pdf' },
+  'digital-storybooks-set-10': { key: 'digital/storybooks-set-10.zip', file: 'cuppa-panda-storybooks-all-10.zip' },
+  'digital-colouring-book': { key: 'digital/colouring-book.pdf', file: 'colouring-book-story-01-momo.pdf' },
 };
 
 const URL_TTL_SECONDS = 3600; // download links work for 1 hour
