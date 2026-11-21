@@ -54,6 +54,7 @@ tr:last-child td{border-bottom:0}
 tbody tr:hover{background:#fafafa}
 td.num{text-align:right;white-space:nowrap}
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
+.ref{display:inline-block;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
 .small{color:var(--soft);font-size:12px}
 .badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
 .badge.paid,.badge.approved{background:var(--green-bg);color:var(--green-tx)}
@@ -237,7 +238,7 @@ function renderOrders(){
     var items=(o.items||[]).map(function(i){return esc(i.name)+(i.qty>1?' \u00d7 '+i.qty:'')+' <span class="small">('+money(i.unit_price_cents*i.qty,o.currency)+')</span>';}).join('<br>');
     var cust=esc(o.customer_name||'')+(o.customer_name?'<br>':'')+'<span class="small">'+esc(o.email||'')+'</span>';
     if(o.address)cust+='<br><span class="small">'+esc(o.address)+'</span>';
-    return '<tr><td><span class="mono">'+esc(o.order_no)+'</span><br><span class="small">'+esc(o.payment_ref||o.payment_provider||'')+'</span></td>'
+    return '<tr><td><span class="mono">'+esc(o.order_no)+'</span><br><span class="small ref" title="'+esc(o.payment_ref||o.payment_provider||'')+'">'+esc(o.payment_ref||o.payment_provider||'')+'</span></td>'
       +'<td class="hide-m small">'+esc(fmtDate(o.created_at))+'</td><td>'+cust+'</td><td>'+items+'</td>'
       +'<td class="num"><b>'+money(o.total_cents,o.currency)+'</b><br><span class="small">'+esc(o.currency)+'</span></td><td>'+badge(o.status)+'</td></tr>';
   }).join('')||'<tr><td colspan="6"><div class="empty">No orders match.</div></td></tr>';
@@ -313,7 +314,7 @@ function renderMembers(){
   var list=state.members||[];var st=state.memberStats||{};
   document.getElementById('memberStats').innerHTML=
     stat('Members',st.members!=null?st.members:list.length,'Panda Club subscribers')+
-    stat('Referral codes',st.codes!=null?st.codes:0,'one per member')+
+    stat('Referral codes',st.codes!=null?st.codes:0,'members with a code')+
     stat('Referrals granted',st.referrals_granted!=null?st.referrals_granted:0,'paid uses')+
     stat('Free claims used',st.free_claims_used!=null?st.free_claims_used:0,'member gift taken');
   var q=(document.getElementById('qMembers').value||'').trim().toLowerCase();
