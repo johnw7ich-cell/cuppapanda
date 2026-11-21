@@ -11,7 +11,12 @@
 // - Every verified event is recorded in webhook_events first; its
 //   (provider, event_id) primary key makes Stripe redeliveries harmless.
 // Env vars: STRIPE_WEBHOOK_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY.
+// RESEND_API_KEY (optional): when set, a confirmation email is sent from
+// hello@cuppapanda.com when an order flips to paid. Without it the payment
+// still stands — the send is skipped and logged. The sending domain must be
+// verified in Resend, or Resend rejects the send (logged, payment unaffected).
 import { sb, json, grantCredit } from './_lib.js';
+import { signedDownloadUrl } from './_download.js';
 
 const TOLERANCE_SECONDS = 300; // Stripe's recommended 5-minute replay window
 
@@ -107,6 +112,91 @@ async function grantReferralReward(env, orderNo) {
   }
 }
 
+// ---- Order confirmation email (Resend) ----
+// Sent once, when the webhook flips an order to paid. Never throws: an email
+// failure is logged only — the payment itself is already recorded, and a
+// Stripe redelivery must never re-send (the webhook_events dedupe returns
+// early on duplicates, so this runs on first processing only).
+const SYMBOLS = { GBP: '£', EUR: '€', USD: '$' };
+function esc(s) {
+  return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function money(cents, currency) {
+  return (SYMBOLS[currency] || '') + (Number(cents || 0) / 100).toFixed(2);
+}
+
+async function sendOrderConfirmation(env, session, order, no) {
+  const email = String(
+    (session.customer_email || (session.customer_details && session.customer_details.email) || order.email || ''),
+  ).trim().toLowerCase();
+  if (!email) {
+    console.error(`confirmation email skipped for order ${no}: no customer email`);
+    return;
+  }
+  if (!env.RESEND_API_KEY) {
+    console.log(`confirmation email skipped for order ${no}: RESEND_API_KEY not set`);
+    return;
+  }
+  let items = [];
+  try {
+    items = await sb(env, `order_items?order_id=eq.${order.id}&select=sku,name,unit_price_cents,qty`);
+  } catch (e) {
+    console.error(`confirmation email: could not load items for order ${no}:`, e.message);
+  }
+  const rows = items.map(i => {
+    const qty = i.qty > 1 ? ` × ${i.qty}` : '';
+    return `<tr><td style="padding:6px 0;">${esc(i.name)}${qty}</td><td style="padding:6px 0;text-align:right;">${money(i.unit_price_cents * i.qty, order.currency)}</td></tr>`;
+  }).join('');
+  const discountRow = order.discount_cents > 0
+    ? `<tr><td style="padding:6px 0;">Discount</td><td style="padding:6px 0;text-align:right;">−${money(order.discount_cents, order.currency)}</td></tr>`
+    : '';
+  const shippingCell = order.shipping_cents === null || order.shipping_cents === undefined
+    ? 'To be confirmed by email'
+    : (order.shipping_cents === 0 ? 'FREE' : money(order.shipping_cents, order.currency));
+  // Digital downloads: a fresh 1-hour link per downloadable item in the order
+  // (paid lines and $0 free picks alike). A missing file simply gets no link.
+  const downloads = [];
+  for (const i of items) {
+    try {
+      const link = await signedDownloadUrl(env, i.sku);
+      downloads.push(`<li style="margin:8px 0;"><a href="${esc(link.url)}">${esc(i.name)}</a> — download link (works for 1 hour)</li>`);
+    } catch { /* not a downloadable item (e.g. physical merch) — no link */ }
+  }
+  const hasDigital = downloads.length > 0;
+  const downloadSection = hasDigital
+    ? `<h3 style="margin:22px 0 6px;">Your downloads</h3><ul style="margin:0;padding-left:18px;">${downloads.join('')}</ul><p style="color:#6d6167;">These links work for 1 hour. If yours expires, just reply to this email and we will send a fresh one.</p>`
+    : `<p style="color:#6d6167;">Your merch is made to order first (5–10 working days to make), then shipped. UK: 5–10 working days. Ireland &amp; EU: 7–12 working days.</p>`;
+  const html = `<div style="font-family:system-ui,sans-serif;color:#3a3238;max-width:560px;">
+<p>Hi there,</p>
+<p>🐼 Thank you — your Cuppa Panda order <b>${esc(no)}</b> is confirmed and paid.</p>
+<table style="width:100%;border-collapse:collapse;border-top:2px dashed #f3cfd8;border-bottom:2px dashed #f3cfd8;">${rows}
+<tr><td style="padding:6px 0;">Subtotal</td><td style="padding:6px 0;text-align:right;">${money(order.subtotal_cents, order.currency)}</td></tr>${discountRow}
+<tr><td style="padding:6px 0;">Delivery</td><td style="padding:6px 0;text-align:right;">${shippingCell}</td></tr>
+<tr><td style="padding:10px 0;font-weight:800;">Total</td><td style="padding:10px 0;text-align:right;font-weight:800;">${money(order.total_cents, order.currency)}</td></tr></table>
+${downloadSection}
+<p>Check your order anytime on <a href="https://cuppapanda.com">cuppapanda.com</a> — open the Panda helper (bottom right) → Track my order, with your order number and this email address.</p>
+<p>Questions? Just reply to this email or write to <a href="mailto:hello@cuppapanda.com">hello@cuppapanda.com</a>.</p>
+<p>— Cuppa Panda 🐼</p></div>`;
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'content-type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Cuppa Panda <hello@cuppapanda.com>',
+        to: [email],
+        subject: `Your Cuppa Panda order ${no} is confirmed 🐼`,
+        html,
+      }),
+    });
+    if (!res.ok) {
+      const t = await res.text().catch(() => '');
+      console.error(`Resend ${res.status} for order ${no}: ${t.slice(0, 300)}`);
+    }
+  } catch (e) {
+    console.error(`Resend request failed for order ${no}:`, e.message);
+  }
+}
+
 export async function onRequestPost({ request, env }) {
   if (!env.STRIPE_WEBHOOK_SECRET) return json({ error: 'Webhook is not configured' }, 500);
   const rawBody = await request.text();
@@ -133,7 +223,7 @@ export async function onRequestPost({ request, env }) {
         const session = event.data.object || {};
         const no = (session.metadata && session.metadata.order_no) || session.client_reference_id;
         if (no) {
-          const found = await sb(env, `orders?order_no=eq.${encodeURIComponent(no)}&select=id,status,currency,total_cents`);
+          const found = await sb(env, `orders?order_no=eq.${encodeURIComponent(no)}&select=id,order_no,email,status,currency,subtotal_cents,discount_cents,shipping_cents,total_cents`);
           const order = found && found[0];
           if (order && order.status !== 'paid') {
             const amountOk = session.amount_total === order.total_cents;
@@ -155,6 +245,10 @@ export async function onRequestPost({ request, env }) {
               // Stripe retry safe (no double grants).
               await grantReferralReward(env, no).catch(e =>
                 console.error(`referral grant failed for order ${no}:`, e.message));
+              // Confirmation email (Resend). Never throws: a failed send is
+              // logged only — the payment itself is already recorded.
+              await sendOrderConfirmation(env, session, order, no).catch(e =>
+                console.error(`confirmation email failed for order ${no}:`, e.message));
             } else {
               console.error(
                 `Stripe webhook: NOT marking ${no} paid — session amount ${session.amount_total} ${session.currency} ` +

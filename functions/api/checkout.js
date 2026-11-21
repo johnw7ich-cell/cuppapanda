@@ -133,7 +133,8 @@ export async function onRequestPost({ request, env }) {
     };
     // BOGOF: exactly one digital single (qty 1) in the cart, no bundle.
     // The free pick must be a digital single. One BOGOF per order.
-    const singleLines = lines.filter(l => isDigitalSingle(l.sku) && l.qty === 1);
+    // The $0.99 test sticker never qualifies (standalone test product).
+    const singleLines = lines.filter(l => isDigitalSingle(l.sku) && l.qty === 1 && l.sku !== 'digital-test-sticker-099');
     const hasBundle = lines.some(l => l.sku === DIGITAL_BUNDLE);
     if (body.bogof_free) {
       const free = String(body.bogof_free).trim();

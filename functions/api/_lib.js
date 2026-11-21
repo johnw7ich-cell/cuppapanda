@@ -53,7 +53,7 @@ export const DIGITAL_SINGLES = [
   'digital-panda-desk-journal', 'digital-adhd-focus-planner', 'digital-calm-workbook',
   'digital-student-planner', 'digital-habit-tracker', 'digital-sticker-pack',
   'digital-notion-template', 'digital-junk-journal-kit', 'digital-colouring-pages',
-  'digital-desk-poster-set',
+  'digital-desk-poster-set', 'digital-test-sticker-099',
 ];
 export const isDigitalSingle = sku => DIGITAL_SINGLES.includes(sku);
 

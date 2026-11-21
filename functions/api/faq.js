@@ -27,7 +27,7 @@ const FAQS = [
     a: 'Join the Panda Club on our homepage for 15% off your first order with code PANDA15, plus first looks at new Friday drops.' },
   { id: 'payment', keys: ['pay', 'payment', 'card', 'checkout'],
     q: 'How do I pay?',
-    a: 'Place your order on the site and we will email you to confirm it and send a secure payment link. No payment is taken on the website itself.' },
+    a: 'Place your order and pay securely with Stripe checkout (card). Once payment is confirmed we email you your order confirmation with your download links.' },
   { id: 'merch-timing', keys: ['made to order', 'merch', 'hoodie', 'print'],
     q: 'Why does merch take longer?',
     a: 'Merch is made to order — printed just for you — which takes 5–10 working days to make before delivery time.' },
