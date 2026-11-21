@@ -61,6 +61,15 @@ td.num{text-align:right;white-space:nowrap}
 .badge.rejected{background:var(--red-bg);color:var(--red-tx)}
 .badge.other{background:#f1f2f4;color:var(--soft)}
 .note{color:var(--soft);font-size:12.5px;margin-top:12px}
+.chart-card{padding:18px 18px 12px;margin-bottom:18px}
+.chart-head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.chart-title{font-weight:800;font-size:16px}
+.range-btns{margin-left:auto;display:flex;gap:6px}
+.legend{display:flex;gap:18px;margin-top:4px;color:var(--soft);font-size:12px}
+.lg{display:flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+.bar-sw{background:var(--pink)}
+.line-sw{background:#9ca3af;height:3px;border-radius:2px}
 .err{color:#b3261e;font-weight:700;margin-top:10px;display:none}
 .empty{padding:28px;text-align:center;color:var(--soft)}
 /* gate */
@@ -109,6 +118,18 @@ td.num{text-align:right;white-space:nowrap}
 <!-- ORDERS -->
 <section id="tab-orders">
 <div class="stats" id="orderStats"></div>
+<div class="card chart-card">
+<div class="chart-head">
+<div><div class="chart-title">Sales</div><div class="small" id="chartSummary"></div></div>
+<div class="range-btns">
+<button class="pill range on" data-range="weekly" type="button">Weekly</button>
+<button class="pill range" data-range="monthly" type="button">Monthly</button>
+<button class="pill range" data-range="yearly" type="button">Yearly</button>
+</div>
+</div>
+<div id="chartWrap"><div class="empty">Loading chart…</div></div>
+<div class="legend"><span class="lg"><span class="sw bar-sw"></span>Paid orders</span><span class="lg"><span class="sw line-sw"></span>All orders</span></div>
+</div>
 <div class="toolbar">
 <button class="pill on" data-f="all" type="button">All</button>
 <button class="pill" data-f="paid" type="button">Paid</button>
@@ -151,7 +172,7 @@ function post(path,body){
   return fetch(path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});});
 }
-var state={tab:'orders',orders:null,members:null,affs:null,orderFilter:'all'};
+var state={tab:'orders',orders:null,members:null,affs:null,orderFilter:'all',chart:null,chartRange:'weekly'};
 
 function showTab(tab){
   state.tab=tab;
@@ -190,7 +211,7 @@ function signIn(pass){
     document.getElementById('nOrders').textContent='('+state.orders.length+')';
     document.getElementById('gateWrap').style.display='none';
     document.getElementById('dashWrap').style.display='block';
-    renderOrders();showTab('orders');
+    renderOrders();showTab('orders');loadChart();
   }).catch(function(){var e=document.getElementById('gateErr');e.textContent='Could not reach the server. Try again.';e.style.display='block';});
 }
 /* ---- orders ---- */
@@ -220,6 +241,72 @@ function renderOrders(){
       +'<td class="hide-m small">'+esc(fmtDate(o.created_at))+'</td><td>'+cust+'</td><td>'+items+'</td>'
       +'<td class="num"><b>'+money(o.total_cents,o.currency)+'</b><br><span class="small">'+esc(o.currency)+'</span></td><td>'+badge(o.status)+'</td></tr>';
   }).join('')||'<tr><td colspan="6"><div class="empty">No orders match.</div></td></tr>';
+}
+/* ---- sales chart ---- */
+function loadChart(force){
+  var pass=getPass();if(!pass)return;
+  if(state.chart&&!force){renderChart();return;}
+  post('/api/admin-chart',{passcode:pass}).then(function(x){
+    if(!x.ok)return;
+    state.chart=x.j.orders||[];renderChart();
+  }).catch(function(){});
+}
+function chartBuckets(){
+  var rows=state.chart||[];
+  var now=new Date();now.setHours(0,0,0,0);
+  var range=state.chartRange,buckets=[],i,d;
+  if(range==='yearly'){
+    for(i=11;i>=0;i--){var m=new Date(now.getFullYear(),now.getMonth()-i,1);
+      buckets.push({key:m.getFullYear()+'-'+m.getMonth(),label:m.toLocaleDateString(undefined,{month:'short'}),start:new Date(m.getFullYear(),m.getMonth(),1),end:new Date(m.getFullYear(),m.getMonth()+1,1)});}
+  }else{
+    var days=range==='weekly'?7:30;
+    for(i=days-1;i>=0;i--){d=new Date(now);d.setDate(d.getDate()-i);
+      var nd=new Date(d);nd.setDate(nd.getDate()+1);
+      buckets.push({key:d.toDateString(),label:range==='weekly'?d.toLocaleDateString(undefined,{weekday:'short'}):String(d.getDate()),start:d,end:nd});}
+  }
+  buckets.forEach(function(b){b.paid=0;b.total=0;b.rev={};});
+  rows.forEach(function(o){
+    var t=new Date(o.created_at);if(isNaN(t))return;
+    for(var k=0;k<buckets.length;k++){var b=buckets[k];
+      if(t>=b.start&&t<b.end){b.total++;if(o.status==='paid'){b.paid++;b.rev[o.currency]=(b.rev[o.currency]||0)+Number(o.total_cents||0);}break;}}
+  });
+  return buckets;
+}
+function renderChart(){
+  var wrap=document.getElementById('chartWrap');
+  if(!state.chart){wrap.innerHTML='<div class="empty">Loading chart…</div>';return;}
+  var buckets=chartBuckets();
+  var paidTotal=0,totalOrders=0,rev={};
+  buckets.forEach(function(b){paidTotal+=b.paid;totalOrders+=b.total;
+    Object.keys(b.rev).forEach(function(c){rev[c]=(rev[c]||0)+b.rev[c];});});
+  var revStr=Object.keys(rev).map(function(c){return money(rev[c],c);}).join(' + ')||'—';
+  var rangeLabel=state.chartRange==='weekly'?'Last 7 days':(state.chartRange==='monthly'?'Last 30 days':'Last 12 months');
+  document.getElementById('chartSummary').textContent=rangeLabel+' · '+paidTotal+' paid orders ('+revStr+' paid) · '+totalOrders+' orders total';
+  if(!buckets.length){wrap.innerHTML='<div class="empty">No orders in this range.</div>';return;}
+  var maxV=1;buckets.forEach(function(b){maxV=Math.max(maxV,b.paid,b.total);});
+  var W=900,H=240,padL=34,padB=30,padT=26,iw=W-padL-12,ih=H-padT-padB;
+  var bw=iw/buckets.length;
+  var y=function(v){return padT+ih-(v/maxV)*ih;};
+  var grid='';
+  [0,0.5,1].forEach(function(f){
+    var gy=y(maxV*f);
+    var lab=f===0?'':(maxV===1?'':String(Math.round(maxV*f)));
+    grid+='<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-12)+'" y2="'+gy+'" stroke="#eef0f2"/>'
+      +(lab?'<text x="'+(padL-6)+'" y="'+(gy+4)+'" font-size="11" fill="#9ca3af" text-anchor="end">'+lab+'</text>':'');
+  });
+  var bars='',pts=[];
+  buckets.forEach(function(b,i){
+    var x=padL+i*bw+bw*0.2,w=Math.max(4,bw*0.6);
+    var ph=(b.paid/maxV)*ih;
+    bars+='<rect x="'+x.toFixed(1)+'" y="'+(padT+ih-ph).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+ph.toFixed(1)+'" rx="3" fill="#e56b8c"><title>'+esc(b.label)+': '+b.paid+' paid, '+b.total+' total</title></rect>';
+    if(b.paid>0)bars+='<text x="'+(x+w/2).toFixed(1)+'" y="'+(padT+ih-ph-6).toFixed(1)+'" font-size="11" font-weight="700" fill="#1f2937" text-anchor="middle">'+b.paid+'</text>';
+    var cx=padL+i*bw+bw/2;
+    pts.push(cx.toFixed(1)+','+y(b.total).toFixed(1));
+    bars+='<text x="'+cx.toFixed(1)+'" y="'+(H-8)+'" font-size="11" fill="#6b7280" text-anchor="middle">'+esc(b.label)+'</text>';
+  });
+  var line=pts.length>1?'<polyline points="'+pts.join(' ')+'" fill="none" stroke="#9ca3af" stroke-width="2"/>'
+    +pts.map(function(p){var c=p.split(',');return '<circle cx="'+c[0]+'" cy="'+c[1]+'" r="3" fill="#fff" stroke="#9ca3af" stroke-width="2"/>';}).join(''):'';
+  wrap.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block" role="img" aria-label="Sales chart">'+grid+bars+line+'</svg>';
 }
 /* ---- members ---- */
 function renderMembers(){
@@ -295,7 +382,12 @@ document.querySelectorAll('.pill[data-f]').forEach(function(b){b.addEventListene
 });});
 document.getElementById('qOrders').addEventListener('input',renderOrders);
 document.getElementById('qMembers').addEventListener('input',renderMembers);
-document.getElementById('refresh').addEventListener('click',function(){loadTab(state.tab,true);});
+document.querySelectorAll('.pill.range').forEach(function(b){b.addEventListener('click',function(){
+  state.chartRange=b.dataset.range;
+  document.querySelectorAll('.pill.range').forEach(function(x){x.classList.toggle('on',x===b);});
+  renderChart();
+});});
+document.getElementById('refresh').addEventListener('click',function(){loadTab(state.tab,true);loadChart(true);});
 document.getElementById('go').addEventListener('click',function(){
   var p=document.getElementById('pass').value;if(p)signIn(p);
 });
