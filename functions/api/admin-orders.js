@@ -10,7 +10,21 @@
 // env var is not set, the endpoint reports "not configured" instead of
 // listing anything. The page that calls this is /admin.html (noindex,
 // linked from nowhere) — admins only: Joh + Jem.
+//
+// Address: stored as jsonb in the orders table; it is flattened to one
+// readable line here so the page never shows "[object Object]".
 import { sb, json } from './_lib.js';
+
+function addressText(a) {
+  if (!a) return '';
+  if (typeof a === 'string') return a;
+  if (typeof a === 'object') {
+    const parts = ['line1', 'line2', 'city', 'state', 'postcode', 'postal_code', 'zip', 'country']
+      .map(k => a[k]).filter(v => v !== undefined && v !== null && v !== '');
+    return parts.length ? parts.join(', ') : JSON.stringify(a);
+  }
+  return String(a);
+}
 
 export async function onRequestPost({ request, env }) {
   if (!env.ADMIN_PASSCODE) {
@@ -34,6 +48,7 @@ export async function onRequestPost({ request, env }) {
       }
       out.push({
         ...o,
+        address: addressText(o.address),
         items: items.map(i => ({ sku: i.sku, name: i.name, unit_price_cents: i.unit_price_cents, qty: i.qty })),
       });
     }

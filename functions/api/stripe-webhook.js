@@ -126,6 +126,17 @@ function esc(s) {
 function money(cents, currency) {
   return (SYMBOLS[currency] || '') + (Number(cents || 0) / 100).toFixed(2);
 }
+// Delivery address is stored as jsonb; flatten it to one readable line.
+function addressText(a) {
+  if (!a) return '';
+  if (typeof a === 'string') return a;
+  if (typeof a === 'object') {
+    const parts = ['line1', 'line2', 'city', 'state', 'postcode', 'postal_code', 'zip', 'country']
+      .map(k => a[k]).filter(v => v !== undefined && v !== null && v !== '');
+    return parts.length ? parts.join(', ') : JSON.stringify(a);
+  }
+  return String(a);
+}
 
 async function sendOrderConfirmation(env, session, order, no) {
   const email = String(
@@ -229,7 +240,7 @@ async function sendAdminNotification(env, session, order, no) {
     ? 'To be confirmed by email'
     : (order.shipping_cents === 0 ? 'FREE' : money(order.shipping_cents, order.currency));
   const addressSection = order.address
-    ? `<h3 style="margin:22px 0 6px;">Delivery address</h3><p style="white-space:pre-wrap;">${esc(order.address)}</p>`
+    ? `<h3 style="margin:22px 0 6px;">Delivery address</h3><p style="white-space:pre-wrap;">${esc(addressText(order.address))}</p>`
     : '';
   const customer = [order.customer_name, order.email].filter(Boolean).join(' — ');
   const payRef = session.payment_intent || session.id || '';

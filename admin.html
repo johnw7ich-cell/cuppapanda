@@ -1,103 +1,305 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin orders — Cuppa Panda</title><meta name="description" content="Cuppa Panda admin orders. Private page, not for customers."><meta name="robots" content="noindex,nofollow"><link rel="icon" type="image/png" href="/images/logo-badge.png"><meta name="theme-color" content="#e56b8c">
+<title>Admin Dashboard — Cuppa Panda</title><meta name="description" content="Cuppa Panda admin dashboard: orders, membership and affiliates. Private page, not for customers."><meta name="robots" content="noindex,nofollow"><link rel="icon" type="image/png" href="/images/logo-badge.png"><meta name="theme-color" content="#e56b8c">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--pink:#e56b8c;--cream:#fff7f0;--ink:#3a3238;--soft:#8a7f85}
-body{font-family:"Segoe UI","PingFang HK","Microsoft JhengHei",system-ui,sans-serif;background:var(--cream);color:var(--ink)}
-.wrap{max-width:1020px;margin:0 auto;padding:24px 18px 60px}
-h1{font-size:26px;margin:6px 0 4px}
-h1 span{color:var(--pink)}
-p.sub{color:var(--soft);font-size:14px;margin-bottom:20px}
-.card{background:#fff;border:2px solid #f3cfd8;border-radius:16px;padding:20px;margin-bottom:18px}
-label{display:block;font-weight:700;font-size:14px;margin-bottom:6px}
-input[type=password]{width:min(320px,100%);padding:10px 12px;border:2px solid #f0c3d0;border-radius:10px;font-size:15px}
-button{border:0;background:var(--pink);color:#fff;padding:10px 20px;border-radius:999px;font-weight:700;cursor:pointer;font-size:14px;margin-top:12px}
-button.ghost{background:#fff;color:var(--ink);border:2px solid #f0c3d0}
-.err{color:#b3261e;font-weight:700;margin-top:10px;display:none}
-.summary{font-size:14px;color:var(--soft);margin-bottom:12px}
-.summary b{color:var(--ink)}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th{text-align:left;padding:8px;border-bottom:2px solid #f3cfd8;color:var(--soft);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
-td{padding:10px 8px;border-bottom:1px solid #fbe9ee;vertical-align:top}
+:root{--pink:#e56b8c;--pink-deep:#c74e72;--ink:#1f2937;--soft:#6b7280;--line:#e5e7eb;--bg:#f4f5f7;--green-bg:#dcfce7;--green-tx:#166534;--amber-bg:#fef3c7;--amber-tx:#92400e;--red-bg:#fee2e2;--red-tx:#991b1b}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang HK","Microsoft JhengHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+a{color:var(--pink-deep)}
+/* top bar */
+.topbar{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.topbar-in{max-width:1120px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px}
+.brand img{width:32px;height:32px;border-radius:50%}
+.brand .tag{background:var(--ink);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.topbar .sp{flex:1}
+.topbar .meta{color:var(--soft);font-size:13px}
+.topbar a{font-size:13px;font-weight:600;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:26px 20px 60px}
+.head{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.head h1{font-size:26px;line-height:1.2}
+.head p{color:var(--soft);font-size:13px;margin-top:2px}
+.head .sp{flex:1}
+button{border:0;cursor:pointer;font:inherit}
+.btn{background:var(--pink);color:#fff;padding:9px 18px;border-radius:999px;font-weight:700;font-size:13px}
+.btn:hover{background:var(--pink-deep)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:#cbd5e1}
+.btn.sm{padding:5px 12px;font-size:12px}
+.btn.approve{background:#fff;color:var(--green-tx);border:1px solid #86efac}
+.btn.reject{background:#fff;color:var(--red-tx);border:1px solid #fca5a5}
+/* tabs */
+.tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.tab{padding:8px 16px;border-radius:999px;background:#fff;border:1px solid var(--line);font-weight:700;font-size:13px;color:var(--soft)}
+.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tab .n{opacity:.75;font-weight:600;margin-left:4px}
+/* stat cards */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.stat .l{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--soft)}
+.stat .v{font-size:27px;font-weight:800;margin-top:4px;line-height:1.15}
+.stat .s{font-size:12px;color:var(--soft);margin-top:2px}
+/* toolbar */
+.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.pill{padding:7px 14px;border-radius:999px;background:#fff;border:1px solid var(--line);font-weight:700;font-size:13px;color:var(--soft)}
+.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.search{margin-left:auto}
+.search input{width:min(280px,70vw);padding:9px 12px;border:1px solid var(--line);border-radius:999px;font-size:13px;background:#fff}
+/* table card */
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:760px}
+th{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);color:var(--soft);font-size:11px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid #f1f2f4;vertical-align:top}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#fafafa}
 td.num{text-align:right;white-space:nowrap}
-.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:800}
-.badge.paid{background:#dff3e7;color:#1e7d46}
-.badge.pending{background:#fff3d6;color:#8a6d00}
-.badge.other{background:#eee;color:#666}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
 .small{color:var(--soft);font-size:12px}
-.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
-@media(max-width:700px){table{font-size:13px}.hide-m{display:none}}
+.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.badge.paid,.badge.approved{background:var(--green-bg);color:var(--green-tx)}
+.badge.pending{background:var(--amber-bg);color:var(--amber-tx)}
+.badge.rejected{background:var(--red-bg);color:var(--red-tx)}
+.badge.other{background:#f1f2f4;color:var(--soft)}
+.note{color:var(--soft);font-size:12.5px;margin-top:12px}
+.err{color:#b3261e;font-weight:700;margin-top:10px;display:none}
+.empty{padding:28px;text-align:center;color:var(--soft)}
+/* gate */
+.gate{min-height:70vh;display:flex;align-items:center;justify-content:center}
+.gate .card{width:min(400px,92vw);padding:32px 28px;text-align:center}
+.gate img{width:56px;height:56px;border-radius:50%;margin-bottom:12px}
+.gate h2{font-size:20px;margin-bottom:4px}
+.gate p{color:var(--soft);font-size:13px;margin-bottom:18px}
+.gate input{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;font-size:15px}
+.gate .btn{width:100%;margin-top:12px;padding:11px}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.hide-m{display:none}}
 </style></head>
-<body><div class="wrap">
-<h1>🐼 Cuppa Panda <span>— Admin orders</span></h1>
-<p class="sub">Private page for the shop admins only. Not linked anywhere on the site, and never indexed. Keep the passcode private.</p>
+<body>
+<header class="topbar"><div class="topbar-in">
+<div class="brand"><img src="/images/logo-badge.png" alt="">Cuppa Panda <span class="tag">Admin</span></div>
+<div class="sp"></div>
+<span class="meta" id="today"></span>
+<a href="https://cuppapanda.com">Store</a>
+<a href="https://dashboard.stripe.com/acct_1UTnzvPtrLCokApg/payments">Stripe</a>
+</div></header>
 
-<div class="card" id="gate">
-<label for="pass">Admin passcode</label>
-<input type="password" id="pass" autocomplete="current-password" placeholder="Enter the admin passcode">
-<br><button id="go" type="button">Show orders</button>
+<div class="wrap" id="gateWrap">
+<div class="gate"><div class="card">
+<img src="/images/logo-badge.png" alt="Cuppa Panda">
+<h2>Admin sign in</h2>
+<p>Orders, membership and affiliates — admins only.<br>This page is not linked anywhere and is never indexed.</p>
+<input type="password" id="pass" autocomplete="current-password" placeholder="Admin passcode">
+<button class="btn" id="go" type="button">Sign in</button>
 <p class="err" id="gateErr"></p>
+</div></div>
 </div>
 
-<div id="orders" style="display:none">
-<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-<p class="summary" id="summary"></p>
-<button class="ghost" id="refresh" type="button">Refresh</button>
+<div class="wrap" id="dashWrap" style="display:none">
+<div class="head">
+<div><h1>Dashboard</h1><p>Orders, Panda Club membership and affiliate applications — newest first.</p></div>
+<div class="sp"></div>
+<button class="btn ghost" id="refresh" type="button">Refresh</button>
 </div>
-<div class="card" style="padding:8px 14px;overflow-x:auto">
-<table><thead><tr><th>Order</th><th class="hide-m">Date</th><th>Customer</th><th>Items</th><th style="text-align:right">Total</th><th>Status</th></tr></thead>
-<tbody id="rows"></tbody></table>
+
+<div class="tabs">
+<button class="tab on" data-tab="orders" type="button">Orders <span class="n" id="nOrders"></span></button>
+<button class="tab" data-tab="members" type="button">Membership <span class="n" id="nMembers"></span></button>
+<button class="tab" data-tab="affiliates" type="button">Affiliates <span class="n" id="nAffs"></span></button>
 </div>
-<p class="sub">Showing the newest 50 orders. Full payment detail lives in the <a href="https://dashboard.stripe.com/acct_1UTnzvPtrLCokApg/payments">Stripe Dashboard</a>.</p>
+
+<!-- ORDERS -->
+<section id="tab-orders">
+<div class="stats" id="orderStats"></div>
+<div class="toolbar">
+<button class="pill on" data-f="all" type="button">All</button>
+<button class="pill" data-f="paid" type="button">Paid</button>
+<button class="pill" data-f="pending" type="button">Pending</button>
+<div class="search"><input id="qOrders" type="search" placeholder="Search order no. or email"></div>
+</div>
+<div class="card"><table><thead><tr><th>Order</th><th class="hide-m">Date</th><th>Customer</th><th>Items</th><th style="text-align:right">Total</th><th>Status</th></tr></thead>
+<tbody id="orderRows"></tbody></table></div>
+<p class="note">Showing the newest 50 orders. Full payment detail lives in the <a href="https://dashboard.stripe.com/acct_1UTnzvPtrLCokApg/payments">Stripe Dashboard</a>.</p>
+</section>
+
+<!-- MEMBERSHIP -->
+<section id="tab-members" style="display:none">
+<div class="stats" id="memberStats"></div>
+<div class="toolbar"><div class="search" style="margin-left:0"><input id="qMembers" type="search" placeholder="Search member email or code"></div></div>
+<div class="card"><table><thead><tr><th>Member</th><th class="hide-m">Joined</th><th>Referral code</th><th style="text-align:right">Uses</th><th style="text-align:right">Credits</th><th>Free claim</th><th>Milestones</th></tr></thead>
+<tbody id="memberRows"></tbody></table></div>
+<p class="note">Panda Club members (subscribers). “Uses” counts granted (paid) referral uses. Milestones 5 / 10 are recorded as owed until the storybook files are delivered.</p>
+</section>
+
+<!-- AFFILIATES -->
+<section id="tab-affiliates" style="display:none">
+<div class="stats" id="affStats"></div>
+<div class="card"><table><thead><tr><th>Applicant</th><th>Platform</th><th style="text-align:right">Audience</th><th class="hide-m">Country</th><th>Pitch</th><th class="hide-m">Applied</th><th>Status</th><th></th></tr></thead>
+<tbody id="affRows"></tbody></table></div>
+<p class="note" id="affNote">Applications are reviewed by hand. Approving only marks the row approved — the personal code is set by hand afterwards.</p>
+</section>
 </div>
 
 <script>
 var SYM={GBP:'\u00a3',EUR:'\u20ac',USD:'$'};
 function money(cents,cur){return (SYM[cur]||'')+(Number(cents||0)/100).toFixed(2);}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function badge(st){var c=st==='paid'?'paid':(st==='pending'?'pending':'other');return '<span class="badge '+c+'">'+esc(st)+'</span>';}
-function load(pass){
-  var err=document.getElementById('gateErr');err.style.display='none';
-  return fetch('/api/admin-orders',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({passcode:pass})})
-  .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
-  .then(function(x){
-    if(!x.ok){err.textContent=x.j.error||'Could not load orders.';err.style.display='block';return false;}
-    sessionStorage.setItem('cuppapanda_admin','1');sessionStorage.setItem('cuppapanda_admin_pass',pass);
-    render(x.j.orders||[]);return true;
-  })
-  .catch(function(){err.textContent='Could not reach the server. Try again.';err.style.display='block';return false;});
+function fmtDate(s){if(!s)return '';try{return new Date(s).toLocaleString();}catch(e){return s;}}
+function fmtDay(s){if(!s)return '';try{return new Date(s).toLocaleDateString();}catch(e){return s;}}
+function badge(st){var c=st==='paid'||st==='approved'?'paid':(st==='pending'?'pending':(st==='rejected'?'rejected':'other'));return '<span class="badge '+c+'">'+esc(st)+'</span>';}
+function stat(label,value,sub){return '<div class="stat"><div class="l">'+esc(label)+'</div><div class="v">'+value+'</div>'+(sub?'<div class="s">'+sub+'</div>':'')+'</div>';}
+function getPass(){return sessionStorage.getItem('cuppapanda_admin_pass')||'';}
+function post(path,body){
+  return fetch(path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});});
 }
-function render(orders){
-  document.getElementById('gate').style.display='none';
-  document.getElementById('orders').style.display='block';
-  var paid=orders.filter(function(o){return o.status==='paid';});
+var state={tab:'orders',orders:null,members:null,affs:null,orderFilter:'all'};
+
+function showTab(tab){
+  state.tab=tab;
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.toggle('on',b.dataset.tab===tab);});
+  ['orders','members','affiliates'].forEach(function(t){
+    document.getElementById('tab-'+t).style.display=(t===tab?'block':'none');
+  });
+  loadTab(tab);
+}
+function loadTab(tab,force){
+  var pass=getPass();if(!pass)return;
+  if(tab==='orders'&&(state.orders&&!force)){renderOrders();return;}
+  if(tab==='members'&&(state.members&&!force)){renderMembers();return;}
+  if(tab==='affiliates'&&(state.affs&&!force)){renderAffiliates();return;}
+  var path=tab==='orders'?'/api/admin-orders':(tab==='members'?'/api/admin-members':'/api/admin-affiliates');
+  post(path,{passcode:pass}).then(function(x){
+    if(!x.ok){gateError(x.j.error||'Could not load.');return;}
+    if(tab==='orders'){state.orders=x.j.orders||[];document.getElementById('nOrders').textContent='('+state.orders.length+')';renderOrders();}
+    if(tab==='members'){state.members=x.j.members||[];state.memberStats=x.j.stats||null;document.getElementById('nMembers').textContent='('+state.members.length+')';renderMembers();}
+    if(tab==='affiliates'){
+      state.affs=x.j.applications||[];state.affStats=x.j.stats||null;state.affMissing=!!x.j.table_missing;
+      document.getElementById('nAffs').textContent='('+(state.affStats?state.affStats.total:0)+')';renderAffiliates();
+    }
+  }).catch(function(){gateError('Could not reach the server. Try again.');});
+}
+function gateError(msg){
+  document.getElementById('dashWrap').style.display='none';
+  document.getElementById('gateWrap').style.display='block';
+  var e=document.getElementById('gateErr');e.textContent=msg;e.style.display='block';
+}
+function signIn(pass){
+  post('/api/admin-orders',{passcode:pass}).then(function(x){
+    if(!x.ok){var e=document.getElementById('gateErr');e.textContent=x.j.error||'Could not sign in.';e.style.display='block';return;}
+    sessionStorage.setItem('cuppapanda_admin_pass',pass);
+    state.orders=x.j.orders||[];
+    document.getElementById('nOrders').textContent='('+state.orders.length+')';
+    document.getElementById('gateWrap').style.display='none';
+    document.getElementById('dashWrap').style.display='block';
+    renderOrders();showTab('orders');
+  }).catch(function(){var e=document.getElementById('gateErr');e.textContent='Could not reach the server. Try again.';e.style.display='block';});
+}
+/* ---- orders ---- */
+function renderOrders(){
+  var list=state.orders||[];
+  var paid=list.filter(function(o){return o.status==='paid';});
+  var pend=list.filter(function(o){return o.status==='pending';});
   var totals={};
   paid.forEach(function(o){totals[o.currency]=(totals[o.currency]||0)+Number(o.total_cents||0);});
-  var totStr=Object.keys(totals).map(function(c){return money(totals[c],c)+' paid';}).join(' · ');
-  document.getElementById('summary').innerHTML='<b>'+orders.length+'</b> orders · <b>'+paid.length+'</b> paid'+(totStr?' · '+esc(totStr):'');
-  document.getElementById('rows').innerHTML=orders.map(function(o){
+  var rev=Object.keys(totals).map(function(c){return money(totals[c],c);}).join(' + ')||'—';
+  document.getElementById('orderStats').innerHTML=
+    stat('Total orders',list.length,'newest 50 shown')+
+    stat('Paid',paid.length,rev+' paid')+
+    stat('Pending',pend.length,'awaiting payment')+
+    stat('Revenue (paid)',rev,'across currencies');
+  var q=(document.getElementById('qOrders').value||'').trim().toLowerCase();
+  var rows=list.filter(function(o){
+    if(state.orderFilter!=='all'&&o.status!==state.orderFilter)return false;
+    if(q&&(String(o.order_no||'').toLowerCase().indexOf(q)<0&&String(o.email||'').toLowerCase().indexOf(q)<0))return false;
+    return true;
+  });
+  document.getElementById('orderRows').innerHTML=rows.map(function(o){
     var items=(o.items||[]).map(function(i){return esc(i.name)+(i.qty>1?' \u00d7 '+i.qty:'')+' <span class="small">('+money(i.unit_price_cents*i.qty,o.currency)+')</span>';}).join('<br>');
     var cust=esc(o.customer_name||'')+(o.customer_name?'<br>':'')+'<span class="small">'+esc(o.email||'')+'</span>';
     if(o.address)cust+='<br><span class="small">'+esc(o.address)+'</span>';
-    var date=o.created_at?new Date(o.created_at).toLocaleString():'';
     return '<tr><td><span class="mono">'+esc(o.order_no)+'</span><br><span class="small">'+esc(o.payment_ref||o.payment_provider||'')+'</span></td>'
-      +'<td class="hide-m small">'+esc(date)+'</td><td>'+cust+'</td><td>'+items+'</td>'
+      +'<td class="hide-m small">'+esc(fmtDate(o.created_at))+'</td><td>'+cust+'</td><td>'+items+'</td>'
       +'<td class="num"><b>'+money(o.total_cents,o.currency)+'</b><br><span class="small">'+esc(o.currency)+'</span></td><td>'+badge(o.status)+'</td></tr>';
-  }).join('') || '<tr><td colspan="6">No orders yet.</td></tr>';
+  }).join('')||'<tr><td colspan="6"><div class="empty">No orders match.</div></td></tr>';
 }
+/* ---- members ---- */
+function renderMembers(){
+  var list=state.members||[];var st=state.memberStats||{};
+  document.getElementById('memberStats').innerHTML=
+    stat('Members',st.members!=null?st.members:list.length,'Panda Club subscribers')+
+    stat('Referral codes',st.codes!=null?st.codes:0,'one per member')+
+    stat('Referrals granted',st.referrals_granted!=null?st.referrals_granted:0,'paid uses')+
+    stat('Free claims used',st.free_claims_used!=null?st.free_claims_used:0,'member gift taken');
+  var q=(document.getElementById('qMembers').value||'').trim().toLowerCase();
+  var rows=list.filter(function(m){
+    if(!q)return true;
+    return String(m.email||'').toLowerCase().indexOf(q)>=0||String(m.referral_code||'').toLowerCase().indexOf(q)>=0;
+  });
+  document.getElementById('memberRows').innerHTML=rows.map(function(m){
+    var miles=(m.milestones||[]).map(function(x){return 'R'+x.milestone;}).join(', ')||'—';
+    var claim=m.free_claim_used?'<span class="badge paid">used</span>':'<span class="badge other">not yet</span>';
+    var unsub=m.unsubscribed_at?' <span class="small">(unsubscribed)</span>':'';
+    return '<tr><td>'+esc(m.email)+unsub+'<br><span class="small">'+esc(m.source||'')+'</span></td>'
+      +'<td class="hide-m small">'+esc(fmtDay(m.created_at))+'</td>'
+      +'<td>'+(m.referral_code?'<span class="mono">'+esc(m.referral_code)+'</span>':'<span class="small">—</span>')+'</td>'
+      +'<td class="num"><b>'+Number(m.referrals_granted||0)+'</b><br><span class="small">of '+Number(m.uses_count||0)+' uses</span></td>'
+      +'<td class="num"><b>'+Number(m.credits||0)+'</b></td><td>'+claim+'</td><td>'+esc(miles)+'</td></tr>';
+  }).join('')||'<tr><td colspan="7"><div class="empty">No members yet.</div></td></tr>';
+}
+/* ---- affiliates ---- */
+function renderAffiliates(){
+  var st=state.affStats||{total:0,pending:0,approved:0,rejected:0};
+  document.getElementById('affStats').innerHTML=
+    stat('Applications',st.total,'all time')+
+    stat('Pending',st.pending,'awaiting review')+
+    stat('Approved',st.approved,'')+
+    stat('Rejected',st.rejected,'');
+  if(state.affMissing){
+    document.getElementById('affRows').innerHTML='<tr><td colspan="8"><div class="empty">Applications are not open yet — the affiliate table has not been created. Run supabase/affiliate-migration.sql in the Supabase SQL Editor first.</div></td></tr>';
+    return;
+  }
+  var list=state.affs||[];
+  document.getElementById('affRows').innerHTML=list.map(function(a){
+    var who=esc(a.name)+'<br><span class="small">'+esc(a.email)+'</span>';
+    var plat=esc(a.platform)+(a.handle?'<br><span class="small">'+esc(a.handle)+'</span>':'');
+    var aud=a.audience_size!=null?Number(a.audience_size).toLocaleString():'—';
+    var pitch=a.pitch?('<details><summary style="cursor:pointer;color:var(--pink-deep)">View pitch</summary><span class="small">'+esc(a.pitch)+'</span></details>'):'<span class="small">—</span>';
+    var acts='';
+    if(a.status==='pending'){
+      acts='<button class="btn sm approve" type="button" data-id="'+a.id+'" data-act="approve">Approve</button> '
+        +'<button class="btn sm reject" type="button" data-id="'+a.id+'" data-act="reject">Reject</button>';
+    }else{
+      acts='<span class="small">'+(a.code?esc(a.code):'')+'</span>';
+    }
+    return '<tr><td>'+who+'</td><td>'+plat+'</td><td class="num">'+aud+'</td>'
+      +'<td class="hide-m">'+esc(a.country||'—')+'</td><td>'+pitch+'</td>'
+      +'<td class="hide-m small">'+esc(fmtDay(a.created_at))+'</td><td>'+badge(a.status)+'</td><td style="white-space:nowrap">'+acts+'</td></tr>';
+  }).join('')||'<tr><td colspan="8"><div class="empty">No applications yet.</div></td></tr>';
+  document.querySelectorAll('#affRows button[data-act]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var id=b.dataset.id,act=b.dataset.act;
+      b.disabled=true;b.textContent=act==='approve'?'Approving…':'Rejecting…';
+      post('/api/admin-affiliates',{passcode:getPass(),id:id,action:act}).then(function(x){
+        if(!x.ok){alert(x.j.error||'Could not update.');}
+        loadTab('affiliates',true);
+      }).catch(function(){alert('Could not reach the server.');loadTab('affiliates',true);});
+    });
+  });
+}
+/* ---- wiring ---- */
+document.getElementById('today').textContent=new Date().toLocaleDateString(undefined,{weekday:'short',year:'numeric',month:'short',day:'numeric'});
+document.querySelectorAll('.tab').forEach(function(b){b.addEventListener('click',function(){showTab(b.dataset.tab);});});
+document.querySelectorAll('.pill[data-f]').forEach(function(b){b.addEventListener('click',function(){
+  state.orderFilter=b.dataset.f;
+  document.querySelectorAll('.pill[data-f]').forEach(function(x){x.classList.toggle('on',x===b);});
+  renderOrders();
+});});
+document.getElementById('qOrders').addEventListener('input',renderOrders);
+document.getElementById('qMembers').addEventListener('input',renderMembers);
+document.getElementById('refresh').addEventListener('click',function(){loadTab(state.tab,true);});
 document.getElementById('go').addEventListener('click',function(){
-  var p=document.getElementById('pass').value;
-  if(!p)return;
-  load(p);
+  var p=document.getElementById('pass').value;if(p)signIn(p);
 });
 document.getElementById('pass').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('go').click();});
-document.getElementById('refresh').addEventListener('click',function(){
-  var p=sessionStorage.getItem('cuppapanda_admin_pass');if(p)load(p);
-});
-(function(){
-  var p=sessionStorage.getItem('cuppapanda_admin_pass');
-  if(p){document.getElementById('pass').value=p;load(p);}
-})();
+(function(){var p=getPass();if(p){document.getElementById('pass').value=p;signIn(p);}})();
 </script>
-</div></body></html>
+</body></html>
