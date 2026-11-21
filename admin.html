@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin orders — Cuppa Panda</title><meta name="description" content="Cuppa Panda admin orders. Private page, not for customers."><meta name="robots" content="noindex,nofollow"><link rel="icon" type="image/png" href="/images/logo-badge.png"><meta name="theme-color" content="#e56b8c">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--pink:#e56b8c;--cream:#fff7f0;--ink:#3a3238;--soft:#8a7f85}
+body{font-family:"Segoe UI","PingFang HK","Microsoft JhengHei",system-ui,sans-serif;background:var(--cream);color:var(--ink)}
+.wrap{max-width:1020px;margin:0 auto;padding:24px 18px 60px}
+h1{font-size:26px;margin:6px 0 4px}
+h1 span{color:var(--pink)}
+p.sub{color:var(--soft);font-size:14px;margin-bottom:20px}
+.card{background:#fff;border:2px solid #f3cfd8;border-radius:16px;padding:20px;margin-bottom:18px}
+label{display:block;font-weight:700;font-size:14px;margin-bottom:6px}
+input[type=password]{width:min(320px,100%);padding:10px 12px;border:2px solid #f0c3d0;border-radius:10px;font-size:15px}
+button{border:0;background:var(--pink);color:#fff;padding:10px 20px;border-radius:999px;font-weight:700;cursor:pointer;font-size:14px;margin-top:12px}
+button.ghost{background:#fff;color:var(--ink);border:2px solid #f0c3d0}
+.err{color:#b3261e;font-weight:700;margin-top:10px;display:none}
+.summary{font-size:14px;color:var(--soft);margin-bottom:12px}
+.summary b{color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;padding:8px;border-bottom:2px solid #f3cfd8;color:var(--soft);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td{padding:10px 8px;border-bottom:1px solid #fbe9ee;vertical-align:top}
+td.num{text-align:right;white-space:nowrap}
+.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:800}
+.badge.paid{background:#dff3e7;color:#1e7d46}
+.badge.pending{background:#fff3d6;color:#8a6d00}
+.badge.other{background:#eee;color:#666}
+.small{color:var(--soft);font-size:12px}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+@media(max-width:700px){table{font-size:13px}.hide-m{display:none}}
+</style></head>
+<body><div class="wrap">
+<h1>🐼 Cuppa Panda <span>— Admin orders</span></h1>
+<p class="sub">Private page for the shop admins only. Not linked anywhere on the site, and never indexed. Keep the passcode private.</p>
+
+<div class="card" id="gate">
+<label for="pass">Admin passcode</label>
+<input type="password" id="pass" autocomplete="current-password" placeholder="Enter the admin passcode">
+<br><button id="go" type="button">Show orders</button>
+<p class="err" id="gateErr"></p>
+</div>
+
+<div id="orders" style="display:none">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+<p class="summary" id="summary"></p>
+<button class="ghost" id="refresh" type="button">Refresh</button>
+</div>
+<div class="card" style="padding:8px 14px;overflow-x:auto">
+<table><thead><tr><th>Order</th><th class="hide-m">Date</th><th>Customer</th><th>Items</th><th style="text-align:right">Total</th><th>Status</th></tr></thead>
+<tbody id="rows"></tbody></table>
+</div>
+<p class="sub">Showing the newest 50 orders. Full payment detail lives in the <a href="https://dashboard.stripe.com/acct_1UTnzvPtrLCokApg/payments">Stripe Dashboard</a>.</p>
+</div>
+
+<script>
+var SYM={GBP:'\u00a3',EUR:'\u20ac',USD:'$'};
+function money(cents,cur){return (SYM[cur]||'')+(Number(cents||0)/100).toFixed(2);}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function badge(st){var c=st==='paid'?'paid':(st==='pending'?'pending':'other');return '<span class="badge '+c+'">'+esc(st)+'</span>';}
+function load(pass){
+  var err=document.getElementById('gateErr');err.style.display='none';
+  return fetch('/api/admin-orders',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({passcode:pass})})
+  .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+  .then(function(x){
+    if(!x.ok){err.textContent=x.j.error||'Could not load orders.';err.style.display='block';return false;}
+    sessionStorage.setItem('cuppapanda_admin','1');sessionStorage.setItem('cuppapanda_admin_pass',pass);
+    render(x.j.orders||[]);return true;
+  })
+  .catch(function(){err.textContent='Could not reach the server. Try again.';err.style.display='block';return false;});
+}
+function render(orders){
+  document.getElementById('gate').style.display='none';
+  document.getElementById('orders').style.display='block';
+  var paid=orders.filter(function(o){return o.status==='paid';});
+  var totals={};
+  paid.forEach(function(o){totals[o.currency]=(totals[o.currency]||0)+Number(o.total_cents||0);});
+  var totStr=Object.keys(totals).map(function(c){return money(totals[c],c)+' paid';}).join(' · ');
+  document.getElementById('summary').innerHTML='<b>'+orders.length+'</b> orders · <b>'+paid.length+'</b> paid'+(totStr?' · '+esc(totStr):'');
+  document.getElementById('rows').innerHTML=orders.map(function(o){
+    var items=(o.items||[]).map(function(i){return esc(i.name)+(i.qty>1?' \u00d7 '+i.qty:'')+' <span class="small">('+money(i.unit_price_cents*i.qty,o.currency)+')</span>';}).join('<br>');
+    var cust=esc(o.customer_name||'')+(o.customer_name?'<br>':'')+'<span class="small">'+esc(o.email||'')+'</span>';
+    if(o.address)cust+='<br><span class="small">'+esc(o.address)+'</span>';
+    var date=o.created_at?new Date(o.created_at).toLocaleString():'';
+    return '<tr><td><span class="mono">'+esc(o.order_no)+'</span><br><span class="small">'+esc(o.payment_ref||o.payment_provider||'')+'</span></td>'
+      +'<td class="hide-m small">'+esc(date)+'</td><td>'+cust+'</td><td>'+items+'</td>'
+      +'<td class="num"><b>'+money(o.total_cents,o.currency)+'</b><br><span class="small">'+esc(o.currency)+'</span></td><td>'+badge(o.status)+'</td></tr>';
+  }).join('') || '<tr><td colspan="6">No orders yet.</td></tr>';
+}
+document.getElementById('go').addEventListener('click',function(){
+  var p=document.getElementById('pass').value;
+  if(!p)return;
+  load(p);
+});
+document.getElementById('pass').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('go').click();});
+document.getElementById('refresh').addEventListener('click',function(){
+  var p=sessionStorage.getItem('cuppapanda_admin_pass');if(p)load(p);
+});
+(function(){
+  var p=sessionStorage.getItem('cuppapanda_admin_pass');
+  if(p){document.getElementById('pass').value=p;load(p);}
+})();
+</script>
+</div></body></html>

@@ -12,9 +12,11 @@
 //   (provider, event_id) primary key makes Stripe redeliveries harmless.
 // Env vars: STRIPE_WEBHOOK_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY.
 // RESEND_API_KEY (optional): when set, a confirmation email is sent from
-// hello@cuppapanda.com when an order flips to paid. Without it the payment
-// still stands — the send is skipped and logged. The sending domain must be
-// verified in Resend, or Resend rejects the send (logged, payment unaffected).
+// hello@cuppapanda.com when an order flips to paid — one to the customer,
+// one to the admins (jemfong412@gmail.com + dennussio@gmail.com). Without it
+// the payment still stands — the sends are skipped and logged. The sending
+// domain must be verified in Resend, or Resend rejects the send (logged,
+// payment unaffected).
 import { sb, json, grantCredit } from './_lib.js';
 import { signedDownloadUrl } from './_download.js';
 
@@ -197,6 +199,71 @@ ${downloadSection}
   }
 }
 
+// ---- Admin notification email (Resend) ----
+// Same send as the customer confirmation, but to the shop admins (Jem, the
+// Stripe account holder, + dennussio, Joh's login) when an order flips to
+// paid. Same never-throws rule, same RESEND_API_KEY gate: until Resend is
+// set up this is skipped and logged, and the payment still stands.
+// Admins can also see every order any time on /admin.html (passcode-gated).
+const ADMIN_EMAILS = ['jemfong412@gmail.com', 'dennussio@gmail.com'];
+
+async function sendAdminNotification(env, session, order, no) {
+  if (!env.RESEND_API_KEY) {
+    console.log(`admin notification skipped for order ${no}: RESEND_API_KEY not set`);
+    return;
+  }
+  let items = [];
+  try {
+    items = await sb(env, `order_items?order_id=eq.${order.id}&select=sku,name,unit_price_cents,qty`);
+  } catch (e) {
+    console.error(`admin notification: could not load items for order ${no}:`, e.message);
+  }
+  const rows = items.map(i => {
+    const qty = i.qty > 1 ? ` × ${i.qty}` : '';
+    return `<tr><td style="padding:6px 0;">${esc(i.name)}${qty}</td><td style="padding:6px 0;text-align:right;">${money(i.unit_price_cents * i.qty, order.currency)}</td></tr>`;
+  }).join('');
+  const discountRow = order.discount_cents > 0
+    ? `<tr><td style="padding:6px 0;">Discount (${esc(order.promo_code || 'promo')})</td><td style="padding:6px 0;text-align:right;">−${money(order.discount_cents, order.currency)}</td></tr>`
+    : '';
+  const shippingCell = order.shipping_cents === null || order.shipping_cents === undefined
+    ? 'To be confirmed by email'
+    : (order.shipping_cents === 0 ? 'FREE' : money(order.shipping_cents, order.currency));
+  const addressSection = order.address
+    ? `<h3 style="margin:22px 0 6px;">Delivery address</h3><p style="white-space:pre-wrap;">${esc(order.address)}</p>`
+    : '';
+  const customer = [order.customer_name, order.email].filter(Boolean).join(' — ');
+  const payRef = session.payment_intent || session.id || '';
+  const html = `<div style="font-family:system-ui,sans-serif;color:#3a3238;max-width:560px;">
+<p>🐼 <b>New paid Cuppa Panda order ${esc(no)}</b> — ${money(order.total_cents, order.currency)}.</p>
+<p>Customer: ${esc(customer || '—')}</p>
+<table style="width:100%;border-collapse:collapse;border-top:2px dashed #f3cfd8;border-bottom:2px dashed #f3cfd8;">${rows}
+<tr><td style="padding:6px 0;">Subtotal</td><td style="padding:6px 0;text-align:right;">${money(order.subtotal_cents, order.currency)}</td></tr>${discountRow}
+<tr><td style="padding:6px 0;">Delivery</td><td style="padding:6px 0;text-align:right;">${shippingCell}</td></tr>
+<tr><td style="padding:10px 0;font-weight:800;">Total</td><td style="padding:10px 0;text-align:right;font-weight:800;">${money(order.total_cents, order.currency)}</td></tr></table>
+${addressSection}
+<p>Payment ref: ${esc(payRef)}</p>
+<p><a href="https://cuppapanda.com/admin.html">Open the admin orders page</a> · <a href="https://dashboard.stripe.com/acct_1UTnzvPtrLCokApg/payments">Stripe Dashboard — Payments</a></p>
+<p style="color:#6d6167;">This is an automatic notification. The customer got their own confirmation email separately.</p></div>`;
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'content-type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Cuppa Panda <hello@cuppapanda.com>',
+        to: ADMIN_EMAILS,
+        subject: `New paid order ${no} — ${money(order.total_cents, order.currency)} 🐼`,
+        html,
+      }),
+    });
+    if (!res.ok) {
+      const t = await res.text().catch(() => '');
+      console.error(`Resend ${res.status} for admin notification ${no}: ${t.slice(0, 300)}`);
+    }
+  } catch (e) {
+    console.error(`Resend request failed for admin notification ${no}:`, e.message);
+  }
+}
+
 export async function onRequestPost({ request, env }) {
   if (!env.STRIPE_WEBHOOK_SECRET) return json({ error: 'Webhook is not configured' }, 500);
   const rawBody = await request.text();
@@ -223,7 +290,7 @@ export async function onRequestPost({ request, env }) {
         const session = event.data.object || {};
         const no = (session.metadata && session.metadata.order_no) || session.client_reference_id;
         if (no) {
-          const found = await sb(env, `orders?order_no=eq.${encodeURIComponent(no)}&select=id,order_no,email,status,currency,subtotal_cents,discount_cents,shipping_cents,total_cents`);
+          const found = await sb(env, `orders?order_no=eq.${encodeURIComponent(no)}&select=id,order_no,email,customer_name,address,country,status,currency,subtotal_cents,discount_cents,shipping_cents,total_cents,promo_code`);
           const order = found && found[0];
           if (order && order.status !== 'paid') {
             const amountOk = session.amount_total === order.total_cents;
@@ -249,6 +316,10 @@ export async function onRequestPost({ request, env }) {
               // logged only — the payment itself is already recorded.
               await sendOrderConfirmation(env, session, order, no).catch(e =>
                 console.error(`confirmation email failed for order ${no}:`, e.message));
+              // Admin notification (Resend, same key): Jem + dennussio get
+              // told about the paid order. Same never-throws rule.
+              await sendAdminNotification(env, session, order, no).catch(e =>
+                console.error(`admin notification failed for order ${no}:`, e.message));
             } else {
               console.error(
                 `Stripe webhook: NOT marking ${no} paid — session amount ${session.amount_total} ${session.currency} ` +
