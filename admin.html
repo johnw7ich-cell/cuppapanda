@@ -281,7 +281,7 @@ function renderChart(){
     Object.keys(b.rev).forEach(function(c){rev[c]=(rev[c]||0)+b.rev[c];});});
   var revStr=Object.keys(rev).map(function(c){return money(rev[c],c);}).join(' + ')||'—';
   var rangeLabel=state.chartRange==='weekly'?'Last 7 days':(state.chartRange==='monthly'?'Last 30 days':'Last 12 months');
-  document.getElementById('chartSummary').textContent=rangeLabel+' · '+paidTotal+' paid orders ('+revStr+' paid) · '+totalOrders+' orders total';
+  document.getElementById('chartSummary').textContent=rangeLabel+' · '+paidTotal+' paid order'+(paidTotal===1?'':'s')+' ('+revStr+' paid) · '+totalOrders+' orders total';
   if(!buckets.length){wrap.innerHTML='<div class="empty">No orders in this range.</div>';return;}
   var maxV=1;buckets.forEach(function(b){maxV=Math.max(maxV,b.paid,b.total);});
   var W=900,H=240,padL=34,padB=30,padT=26,iw=W-padL-12,ih=H-padT-padB;
