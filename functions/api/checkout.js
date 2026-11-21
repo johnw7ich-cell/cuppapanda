@@ -117,7 +117,7 @@ export async function onRequestPost({ request, env }) {
       if (i.sku === DIGITAL_BUNDLE && qty !== 1) {
         return json({ error: 'Pick 10 bundle: one bundle per order' }, 400);
       }
-      const unit = unitCents(Number(p.usd_base), currency);
+      const unit = unitCents(Number(p.usd_base), currency, p.sku);
       subtotal += unit * qty;
       lines.push({ sku: p.sku, name: p.name, unit_price_cents: unit, qty });
     }

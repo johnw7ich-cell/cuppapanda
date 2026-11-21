@@ -11,7 +11,15 @@ export const FLAT_SHIPPING = { GBP: null, EUR: null, USD: null };
 export const PROMOS = { PANDA15: 0.15 }; // Panda Club: 15% off first order
 
 // Shop charm-pricing rule, applied server-side so browser prices are never trusted.
-export function unitCents(usdBase, currency) {
+// Test sticker exception (Joh, 2026-11-22): digital-test-sticker-099 is a flat
+// 50 cents in every currency. The charm rule (+0.99) would force any sub-$1
+// price to 0.99, and $0.39 is below Stripe's $0.50 USD minimum, so the
+// cheapest live-test price is $0.50. Override is keyed on SKU, not on the
+// usd_base value, so it survives any later DB edit.
+export const TEST_STICKER_SKU = 'digital-test-sticker-099';
+export const TEST_STICKER_CENTS = 50;
+export function unitCents(usdBase, currency, sku) {
+  if (sku === TEST_STICKER_SKU) return TEST_STICKER_CENTS;
   const rate = RATES[currency] ?? 1;
   const unit = Math.floor(usdBase * rate) + 0.99;
   return Math.round(unit * 100);
