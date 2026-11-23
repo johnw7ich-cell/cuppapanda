@@ -79,36 +79,50 @@
     <loc>https://cuppapanda.com/digital/colouring-book-02</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://cuppapanda.com/digital/colouring-book-03</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://cuppapanda.com/digital/colouring-book-04</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://cuppapanda.com/digital/colouring-book-05</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://cuppapanda.com/digital/colouring-book-06</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://cuppapanda.com/digital/colouring-book-07</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://cuppapanda.com/digital/colouring-book-08</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://cuppapanda.com/digital/colouring-book-09</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://cuppapanda.com/digital/colouring-book-10</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cuppapanda.com/digital/colouring-set-10</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>

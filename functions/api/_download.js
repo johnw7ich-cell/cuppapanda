@@ -46,6 +46,7 @@ export const DIGITAL_FILES = {
   'digital-colouring-book-08': { key: 'digital/colouring-book-08.pdf', file: 'colouring-book-story-08-bramble.pdf' },
   'digital-colouring-book-09': { key: 'digital/colouring-book-09.pdf', file: 'colouring-book-story-09-race.pdf' },
   'digital-colouring-book-10': { key: 'digital/colouring-book-10.pdf', file: 'colouring-book-story-10-lost-ticket.pdf' },
+  'digital-colouring-set-10': { key: 'digital/colouring-set-10.zip', file: 'cuppa-panda-colouring-books-all-10.zip' },
   'digital-test-sticker-099': { key: 'digital/test-sticker-099.pdf', file: 'test-sticker-099.pdf' },
 };
 
