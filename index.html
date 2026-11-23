@@ -663,7 +663,7 @@ document.getElementById('botSend').addEventListener('click',function(){var i=doc
 document.getElementById('botInput').addEventListener('keydown',function(e){if(e.key==='Enter'){botAsk(this.value);this.value='';}});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')document.getElementById('botPanel').classList.remove('open');});
 
-setCur('GBP');renderCart();
+setCur(CUR);renderCart();
 try{if(localStorage.getItem('cuppapanda_open_cart')==='1'){localStorage.removeItem('cuppapanda_open_cart');openDrawer();}}catch(e){}
 </script>
 </body></html>
