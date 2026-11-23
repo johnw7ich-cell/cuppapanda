@@ -37,6 +37,15 @@ export const DIGITAL_FILES = {
   'digital-desk-poster-set': { key: 'digital/desk-poster-set.pdf', file: 'desk-poster-set-free-sample.pdf' },
   'digital-storybooks-set-10': { key: 'digital/storybooks-set-10.zip', file: 'cuppa-panda-storybooks-all-10.zip' },
   'digital-colouring-book': { key: 'digital/colouring-book.pdf', file: 'colouring-book-story-01-momo.pdf' },
+  'digital-colouring-book-02': { key: 'digital/colouring-book-02.pdf', file: 'colouring-book-story-02-pippa.pdf' },
+  'digital-colouring-book-03': { key: 'digital/colouring-book-03.pdf', file: 'colouring-book-story-03-fenn.pdf' },
+  'digital-colouring-book-04': { key: 'digital/colouring-book-04.pdf', file: 'colouring-book-story-04-hoot.pdf' },
+  'digital-colouring-book-05': { key: 'digital/colouring-book-05.pdf', file: 'colouring-book-story-05-waddle.pdf' },
+  'digital-colouring-book-06': { key: 'digital/colouring-book-06.pdf', file: 'colouring-book-story-06-kiki.pdf' },
+  'digital-colouring-book-07': { key: 'digital/colouring-book-07.pdf', file: 'colouring-book-story-07-miso.pdf' },
+  'digital-colouring-book-08': { key: 'digital/colouring-book-08.pdf', file: 'colouring-book-story-08-bramble.pdf' },
+  'digital-colouring-book-09': { key: 'digital/colouring-book-09.pdf', file: 'colouring-book-story-09-race.pdf' },
+  'digital-colouring-book-10': { key: 'digital/colouring-book-10.pdf', file: 'colouring-book-story-10-lost-ticket.pdf' },
   'digital-test-sticker-099': { key: 'digital/test-sticker-099.pdf', file: 'test-sticker-099.pdf' },
 };
 
