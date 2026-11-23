@@ -119,8 +119,8 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 .carousel .track{display:flex;transition:transform .55s ease}
 .carousel .slide{position:relative;flex:0 0 100%;display:block}
 .carousel .slide img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}
-.carousel .slide.merch img{object-fit:contain;object-position:center 70%}
-.carousel .cap{position:absolute;left:12px;bottom:12px;background:rgba(58,50,56,.78);color:#fff;font-size:13px;font-weight:700;padding:6px 13px;border-radius:999px}.slide.merch .bigword{position:absolute;top:0;left:0;right:0;z-index:2;background:var(--pink-deep);color:#fff;text-align:center;font-size:38px;font-weight:900;line-height:1.05;padding:16px 16px 14px}.slide.merch .bigword .sub{display:block;font-size:14px;font-weight:600;line-height:1.35;margin-top:6px;opacity:.95}
+.carousel .slide.merch{display:flex;flex-direction:column}.slide.merch img{flex:0 0 auto;width:100%;height:auto;aspect-ratio:auto;object-fit:contain}
+.carousel .cap{position:absolute;left:12px;bottom:12px;background:rgba(58,50,56,.78);color:#fff;font-size:13px;font-weight:700;padding:6px 13px;border-radius:999px}.slide.merch .bigword{position:static;flex:0 0 auto;background:var(--pink-deep);color:#fff;text-align:center;font-size:38px;font-weight:900;line-height:1.05;padding:16px 16px 14px}.slide.merch .bigword .sub{display:block;font-size:14px;font-weight:600;line-height:1.35;margin-top:6px;opacity:.95}
 .carousel .cap .p{color:#ffd9e4}
 .carbtn{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:var(--pink-deep);font-size:20px;font-weight:800;cursor:pointer;box-shadow:0 3px 10px rgba(180,120,140,.35);z-index:2;line-height:1}
 .carbtn.prev{left:10px}.carbtn.next{right:10px}
