@@ -19,7 +19,7 @@
 // - Without the key, payment_mode stays 'email': the shop confirms by email and
 //   sends a payment link, exactly like the current site. A Stripe API failure
 //   also falls back to email mode — the saved order is never lost.
-import { sb, json, unitCents, FREE_SHIP, FLAT_SHIPPING, PROMOS, orderNo, DIGITAL_BUNDLE, DIGITAL_SINGLES, isDigitalSingle } from './_lib.js';
+import { sb, json, unitCents, isFreeShipCountry, FLAT_SHIPPING, PROMOS, orderNo, DIGITAL_BUNDLE, DIGITAL_SINGLES, isDigitalSingle } from './_lib.js';
 
 const SHOP_URL = 'https://cuppapanda.com';
 
@@ -192,9 +192,10 @@ export async function onRequestPost({ request, env }) {
       shipping = 0;
       freeShip = true;
     } else {
-      freeShip = goodsTotal / 100 >= FREE_SHIP[currency];
-      const flat = FLAT_SHIPPING[currency];
-      shipping = freeShip ? 0 : (flat === null ? null : Math.round(flat * 100));
+      // Shipping policy (Joh, 2026-11-23): UK & Ireland ship FREE, everywhere
+      // else pays the flat $10 fee (FLAT_SHIPPING, per currency). Never null now.
+      freeShip = isFreeShipCountry(body.country);
+      shipping = freeShip ? 0 : Math.round(FLAT_SHIPPING[currency] * 100);
     }
     const total = goodsTotal + (shipping ?? 0);
 

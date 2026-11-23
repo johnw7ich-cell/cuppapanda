@@ -4,10 +4,13 @@
 //   SUPABASE_SERVICE_ROLE_KEY  service-role key (server only; bypasses RLS)
 
 export const RATES = { GBP: 0.75, EUR: 0.86, USD: 1 };
-export const FREE_SHIP = { GBP: 35, EUR: 40, USD: 45 }; // free delivery thresholds (site policy)
-// Flat shipping below threshold: null = "confirmed by email" (current shop practice).
-// Set a number per currency here when Joh confirms a flat fee.
-export const FLAT_SHIPPING = { GBP: null, EUR: null, USD: null };
+// Shipping policy (Joh, 2026-11-23): delivery 10–15 days to all countries.
+// UK & Ireland ship FREE; everywhere else pays a flat $10 USD fee, converted
+// at the site's rates so every customer pays the $10 equivalent.
+export const FREE_SHIP_COUNTRIES = ['United Kingdom', 'Ireland'];
+export const FLAT_SHIPPING = { GBP: 7.50, EUR: 8.60, USD: 10 };
+// Free shipping by country (matches the checkout country select values).
+export const isFreeShipCountry = c => ['united kingdom', 'ireland', 'uk', 'gb', 'great britain'].includes(String(c || '').trim().toLowerCase());
 export const PROMOS = { PANDA15: 0.15 }; // Panda Club: 15% off first order
 
 // Shop charm-pricing rule, applied server-side so browser prices are never trusted.

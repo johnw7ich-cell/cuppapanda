@@ -1,18 +1,19 @@
 // GET  /api/faq        → the approved FAQ list (used by the website bot widget)
 // POST /api/faq { q }  → keyword-matched approved answer, or a human-handoff reply.
 // Rule-based on purpose: fixed approved answers, $0 running cost, no invented policies.
-// NOTE: delivery times below use the FOOTER version (UK 5–10 / IE-EU 7–12 working days).
-// The PDP overlay on the site says 3–5 days — that conflict is flagged for Joh to
-// confirm ONE canonical matrix before the bot widget goes live on the site.
+// NOTE: shipping policy confirmed by Joh 2026-11-23 — delivery 10–15 days to
+// all countries; UK & Ireland FREE shipping; everywhere else +$10 flat.
+// This replaced the old matrix (UK 5–10 / IE-EU 7–12 working days, free over
+// £35/€40/$45) and the PDP's 3–5 days line.
 import { json } from './_lib.js';
 
 const FAQS = [
   { id: 'delivery-time', keys: ['deliver', 'shipping time', 'how long', 'arrive', 'postage time'],
     q: 'How long does delivery take?',
-    a: 'UK: 5–10 working days. Ireland & EU: 7–12 working days. Merch is made to order first (5–10 working days to make), then shipped. We ship to the UK, Ireland & Europe.' },
+    a: 'Delivery takes 10–15 days to all countries. Merch is made to order first, then shipped. We ship worldwide.' },
   { id: 'free-delivery', keys: ['free delivery', 'free shipping', 'postage cost', 'shipping cost', 'delivery cost'],
     q: 'How much is delivery?',
-    a: 'Delivery is FREE over £35 / €40 / $45. Below that, we confirm the postage with your order by email.' },
+    a: 'UK & Ireland: FREE shipping. Everywhere else: +$10 flat shipping (£7.50 / €8.60).' },
   { id: 'blind-box-returns', keys: ['opened blind', 'open blind box', 'opened'],
     q: 'Can I return an opened blind box?',
     a: 'Opened blind boxes are final sale. Unopened items follow our normal 14-day returns.' },
@@ -30,7 +31,7 @@ const FAQS = [
     a: 'Place your order and pay securely with Stripe checkout (card). Once payment is confirmed we email you your order confirmation with your download links.' },
   { id: 'merch-timing', keys: ['made to order', 'merch', 'hoodie', 'print'],
     q: 'Why does merch take longer?',
-    a: 'Merch is made to order — printed just for you — which takes 5–10 working days to make before delivery time.' },
+    a: 'Merch is made to order — printed just for you — which takes 5–10 working days to make; total delivery is 10–15 days.' },
   { id: 'contact', keys: ['contact', 'email', 'human', 'help', 'talk to'],
     q: 'How can I contact you?',
     a: 'Email us anytime at hello@cuppapanda.com — a human (Cuppa Panda\u2019s dad) reads every message.' },
