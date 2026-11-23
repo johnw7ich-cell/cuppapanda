@@ -57,8 +57,8 @@ export async function sb(env, path, options = {}) {
 }
 
 // Digital program (Series 1, 2026-11-11): the 10 digital singles + the bundle.
-// Customer prices are $5 a single / $10 Pick 10 (usd_base 4.99 / 9.99 —
-// the charm rule makes them display as $4.99 / $9.99 in USD).
+// Customer prices are $5.99 a single / $29.99 Pick 10 (usd_base 5.99 / 29.99 —
+// the charm rule makes them display as $5.99 / $29.99 in USD).
 export const DIGITAL_BUNDLE = 'digital-pick-10';
 export const DIGITAL_SINGLES = [
   'digital-panda-desk-journal', 'digital-adhd-focus-planner', 'digital-calm-workbook',

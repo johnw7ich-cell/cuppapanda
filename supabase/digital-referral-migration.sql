@@ -5,12 +5,12 @@
 -- products. Nothing here touches Stripe, R2 or any secret.
 --
 -- WHAT THIS ADDS
---  * 10 digital products (Series 1) + the $10 Pick 10 bundle, in `products`.
+--  * 10 digital products (Series 1) + the $29.99 Pick 10 bundle, in `products`.
 --    Prices: the shop's charm rule is display = floor(usd_base * rate) + 0.99
---    (GBP 0.75 / EUR 0.86 / USD 1). Joh's program prices are "$5 a single"
---    and "$10 Pick 10" for the CUSTOMER, so usd_base is 4.99 / 9.99:
---    USD $4.99 / $9.99, GBP £3.99 / £7.99, EUR €4.99 / €8.99.
---    (usd_base 5.00 would display as $5.99 in USD — not the $5 Joh set.)
+--    (GBP 0.75 / EUR 0.86 / USD 1). Joh's program prices are "$5.99 a single"
+--    and "$29.99 Pick 10" for the CUSTOMER, so usd_base is 5.99 / 29.99:
+--    USD $5.99 / $29.99, GBP £4.99 / £22.99, EUR €5.99 / €25.99.
+--    (Repriced from $4.99 / $9.99, Joh 2026-11-24.)
 --  * referral_codes / referral_uses / referral_milestones — one code per
 --    Panda Club member; a use is recorded at checkout (pending) and only
 --    granted when the friend's order is PAID (Stripe webhook).
@@ -25,17 +25,17 @@
 
 -- ---------------------------------------------------------------- 1. products
 insert into public.products (sku, name, category, usd_base, image, meta, made_to_order) values
-  ('digital-panda-desk-journal', 'Panda Desk Journal',       'digital', 4.99, 'images/digital/digital-journal.jpg',   'Printable daily journal — A4 + US Letter', false),
-  ('digital-adhd-focus-planner', 'ADHD Focus Planner',       'digital', 4.99, 'images/digital/digital-adhd.jpg',      'Focus, start-task, brain dump & dopamine menu', false),
-  ('digital-calm-workbook',      'Panda Calm Desk Workbook', 'digital', 4.99, 'images/digital/digital-calm.jpg',     '30 days, 5–10 minutes a day — gentle self-care', false),
-  ('digital-student-planner',    'Student Planner',          'digital', 4.99, 'images/digital/digital-student.jpg',  'Printable + Notion — study, homework & revision', false),
-  ('digital-habit-tracker',      'Habit Tracker',            'digital', 4.99, 'images/digital/digital-habit.jpg',    '30-day challenge pack', false),
-  ('digital-sticker-pack',       'Digital Sticker Pack',     'digital', 4.99, 'images/digital/digital-stickers.jpg','500 Miniature World stickers — 10 stories', false),
-  ('digital-notion-template',    'Notion Template',          'digital', 4.99, 'images/digital/digital-notion.jpg',   'Student & life dashboard', false),
-  ('digital-junk-journal-kit',   'Junk Journal Kit',         'digital', 4.99, 'images/digital/digital-junk.jpg',     'Cute modern junk journal', false),
-  ('digital-colouring-pages',    'Colouring Pages',          'digital', 4.99, 'images/digital/digital-colouring.jpg','Line art from the Miniature World stories', false),
-  ('digital-desk-poster-set',    'Desk Poster Set',          'digital', 4.99, 'images/digital/digital-posters.jpg', '10 storybook covers as printable posters', false),
-  ('digital-pick-10',            'Pick 10 Bundle — 10 digital downloads', 'digital', 9.99, 'images/digital/digital-journal.jpg', 'Pick any 10 digital items — $10 for the bundle', false)
+  ('digital-panda-desk-journal', 'Panda Desk Journal',       'digital', 5.99, 'images/digital/digital-journal.jpg',   'Printable daily journal — A4 + US Letter', false),
+  ('digital-adhd-focus-planner', 'ADHD Focus Planner',       'digital', 5.99, 'images/digital/digital-adhd.jpg',      'Focus, start-task, brain dump & dopamine menu', false),
+  ('digital-calm-workbook',      'Panda Calm Desk Workbook', 'digital', 5.99, 'images/digital/digital-calm.jpg',     '30 days, 5–10 minutes a day — gentle self-care', false),
+  ('digital-student-planner',    'Student Planner',          'digital', 5.99, 'images/digital/digital-student.jpg',  'Printable + Notion — study, homework & revision', false),
+  ('digital-habit-tracker',      'Habit Tracker',            'digital', 5.99, 'images/digital/digital-habit.jpg',    '30-day challenge pack', false),
+  ('digital-sticker-pack',       'Digital Sticker Pack',     'digital', 5.99, 'images/digital/digital-stickers.jpg','500 Miniature World stickers — 10 stories', false),
+  ('digital-notion-template',    'Notion Template',          'digital', 5.99, 'images/digital/digital-notion.jpg',   'Student & life dashboard', false),
+  ('digital-junk-journal-kit',   'Junk Journal Kit',         'digital', 5.99, 'images/digital/digital-junk.jpg',     'Cute modern junk journal', false),
+  ('digital-colouring-pages',    'Colouring Pages',          'digital', 5.99, 'images/digital/digital-colouring.jpg','Line art from the Miniature World stories', false),
+  ('digital-desk-poster-set',    'Desk Poster Set',          'digital', 5.99, 'images/digital/digital-posters.jpg', '10 storybook covers as printable posters', false),
+  ('digital-pick-10',            'Pick 10 Bundle — 10 digital downloads', 'digital', 29.99, 'images/digital/digital-journal.jpg', 'Pick any 10 digital items — $29.99 for the bundle', false)
 on conflict (sku) do update set
   name = excluded.name, category = excluded.category, usd_base = excluded.usd_base,
   image = excluded.image, meta = excluded.meta, made_to_order = excluded.made_to_order;
