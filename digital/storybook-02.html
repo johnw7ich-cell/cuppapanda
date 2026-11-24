@@ -192,6 +192,7 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 <p class="sample">📖 10 pages — Story 02, Pippa the Rabbit</p>
 <div class="buybox">
 <button class="btn" type="button" id="buySingle">Buy this download — <span class="p" data-usd="6.99">£5.99</span></button>
+<button class="btn ghost" type="button" id="buyBundle">Bundle +1 — Storybook + Colouring Book — <span class="p" data-usd="10.98">£8.99</span></button>
 <p class="buy-note">Printable PDF — 10 pages, Story 02 Pippa. Digital download, instant, no shipping.</p>
 </div>
 <div class="soon">💌 <b>Panda Club members</b> get 1 free download + a referral code (share it and you both get a free download). <a href="/#club">Join or claim yours →</a></div>
@@ -212,7 +213,7 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
   function setCur(c){CUR=c;try{localStorage.setItem('cuppapanda_cur',c);}catch(e){}document.querySelectorAll('.p').forEach(function(el){el.textContent=charm(parseFloat(el.dataset.usd));});document.querySelectorAll('.curry button').forEach(function(b){b.classList.toggle('on',b.dataset.cur===c);});}
   document.querySelectorAll('.curry button').forEach(function(b){b.addEventListener('click',function(){setCur(b.dataset.cur);});});
   setCur(CUR);
-  var SKU='digital-storybook-02', NAME='Pippa's Wrong Letter', USD=6.99;
+  var SKU='digital-storybook-02', NAME="Pippa's Wrong Letter", USD=6.99;
   var cart=[];try{cart=JSON.parse(localStorage.getItem('cuppapanda_cart')||'[]');}catch(e){cart=[];}
   function saveCart(){try{localStorage.setItem('cuppapanda_cart',JSON.stringify(cart));}catch(e){}}
   var pick10=[];try{pick10=JSON.parse(localStorage.getItem('cuppapanda_pick10')||'[]');}catch(e){pick10=[];}
@@ -222,6 +223,15 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
     var f=null;cart.forEach(function(i){if(i.name===NAME)f=i;});
     if(f){f.qty=1;}else{cart.push({name:NAME,usd:USD,qty:1});}
     saveCart();buy.textContent='Added ✓ — taking you to checkout…';try{localStorage.setItem('cuppapanda_open_cart','1');}catch(e){}window.location.href='/';
+  });}
+  var CNAME='Colouring Book — Story 02 Pippa', CUSD=3.99;
+  var bun=document.getElementById('buyBundle');
+  if(bun){bun.addEventListener('click',function(){
+    var f=null;cart.forEach(function(i){if(i.name===NAME)f=i;});
+    if(f){f.qty=1;}else{cart.push({name:NAME,usd:USD,qty:1});}
+    var g=null;cart.forEach(function(i){if(i.name===CNAME)g=i;});
+    if(g){g.qty=1;}else{cart.push({name:CNAME,usd:CUSD,qty:1});}
+    saveCart();bun.textContent='Bundle added ✓ — taking you to checkout…';try{localStorage.setItem('cuppapanda_open_cart','1');}catch(e){}window.location.href='/';
   });}
   var tog=document.getElementById('pick10toggle');
   function paint(){if(!tog)return;var on=pick10.indexOf(SKU)>-1;tog.textContent=on?'✓ In your Pick 10 ('+pick10.length+'/10)':'＋ Add to Pick 10';}
