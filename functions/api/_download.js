@@ -36,6 +36,7 @@ export const DIGITAL_FILES = {
   'digital-colouring-pages': { key: 'digital/colouring-pages.pdf', file: 'colouring-pages-free-sample.pdf' },
   'digital-desk-poster-set': { key: 'digital/desk-poster-set.pdf', file: 'desk-poster-set-free-sample.pdf' },
   'digital-storybooks-set-10': { key: 'digital/storybooks-set-10.zip', file: 'cuppa-panda-storybooks-all-10.zip' },
+  'digital-storybooks-set-10-bundle': { key: 'digital/storybooks-set-10-bundle.zip', file: 'storybooks-set-10-bundle.zip' },
   'digital-storybook-01': { key: 'digital/storybook-01.pdf', file: 'storybook-01-teacup-spins-too-fast.pdf' },
   'digital-storybook-02': { key: 'digital/storybook-02.pdf', file: 'storybook-02-pippas-wrong-letter.pdf' },
   'digital-storybook-03': { key: 'digital/storybook-03.pdf', file: 'storybook-03-fenns-backwards-roller-coaster.pdf' },

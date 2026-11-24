@@ -8,6 +8,7 @@
 -- claim can never give them away free.
 insert into public.products (sku, name, category, usd_base, image, meta, made_to_order) values
   ('digital-storybooks-set-10', 'Story Books — All 10 Miniature World Stories', 'digital', 39.99, 'images/digital/digital-storybook-01.jpg', 'All 10 Miniature World storybooks — printable, 10 pages each', false),
+  ('digital-storybooks-set-10-bundle', 'Story Books + Colouring Books Bundle — All 10 Miniature World Stories', 'digital', 49.99, 'images/digital/digital-storybook-01.jpg', 'All 10 storybooks + all 10 colouring books — $49.99 ($39.99 + $10)', false),
   ('digital-storybook-01', 'The Teacup Spins Too Fast', 'digital', 6.99, 'images/digital/digital-storybook-01.jpg', 'Story 01 · Momo the Capybara — 10 illustrated pages, printable', false),
   ('digital-storybook-02', 'Pippa''s Wrong Letter', 'digital', 6.99, 'images/digital/digital-storybook-02.jpg', 'Story 02 · Pippa the Rabbit — 10 illustrated pages, printable', false),
   ('digital-storybook-03', 'Fenn''s Backwards Roller Coaster', 'digital', 6.99, 'images/digital/digital-storybook-03.jpg', 'Story 03 · Fenn the Fox — 10 illustrated pages, printable', false),
