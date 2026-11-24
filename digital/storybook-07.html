@@ -192,7 +192,7 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 <p class="sample">📖 10 pages — Story 07, Miso the Cat</p>
 <div class="buybox">
 <button class="btn" type="button" id="buySingle">Buy this download — <span class="p" data-usd="6.99">£5.99</span></button>
-<button class="btn ghost" type="button" id="buyBundle">Bundle +1 — Storybook + Colouring Book — <span class="p" data-usd="6.99">£5.99</span> + <span class="p" data-usd="3.99">£2.99</span></button>
+<button class="btn ghost" type="button" id="buyBundle">Bundle +1 — Storybook + Colouring Book — <span class="p" data-usd="7.99">£5.99</span></button>
 <p class="buy-note">Printable PDF — 10 pages, Story 07 Miso. Digital download, instant, no shipping.</p>
 </div>
 <div class="soon">💌 <b>Panda Club members</b> get 1 free download + a referral code (share it and you both get a free download). <a href="/#club">Join or claim yours →</a></div>
@@ -224,13 +224,11 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
     if(f){f.qty=1;}else{cart.push({name:NAME,usd:USD,qty:1});}
     saveCart();buy.textContent='Added ✓ — taking you to checkout…';try{localStorage.setItem('cuppapanda_open_cart','1');}catch(e){}window.location.href='/';
   });}
-  var CNAME='Colouring Book — Story 07 Miso', CUSD=3.99;
+  var BNAME='Storybook + Colouring Book Bundle — Story 07 Miso', BUSD=7.99;
   var bun=document.getElementById('buyBundle');
   if(bun){bun.addEventListener('click',function(){
-    var f=null;cart.forEach(function(i){if(i.name===NAME)f=i;});
-    if(f){f.qty=1;}else{cart.push({name:NAME,usd:USD,qty:1});}
-    var g=null;cart.forEach(function(i){if(i.name===CNAME)g=i;});
-    if(g){g.qty=1;}else{cart.push({name:CNAME,usd:CUSD,qty:1});}
+    var f=null;cart.forEach(function(i){if(i.name===BNAME)f=i;});
+    if(f){f.qty=1;}else{cart.push({name:BNAME,usd:BUSD,qty:1});}
     saveCart();bun.textContent='Bundle added ✓ — taking you to checkout…';try{localStorage.setItem('cuppapanda_open_cart','1');}catch(e){}window.location.href='/';
   });}
   var tog=document.getElementById('pick10toggle');
