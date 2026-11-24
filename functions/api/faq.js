@@ -19,7 +19,7 @@ const FAQS = [
     a: 'Opened blind boxes are final sale. Unopened items follow our normal 14-day returns.' },
   { id: 'returns', keys: ['return', 'refund', 'exchange', 'send back'],
     q: 'Can I return something?',
-    a: 'Yes — 14-day returns on unused items. Email hello@cuppapanda.com and we will sort it out. (Refunds are handled by a human, not the bot.)' },
+    a: '14-day returns on unused physical items. Digital products cannot be refunded — downloads are delivered instantly. Email hello@cuppapanda.com and we will sort it out. (Refunds are handled by a human, not the bot.)' },
   { id: 'blind-box', keys: ['blind box', 'surprise', 'which design', 'specific design', 'choose design', 'secret'],
     q: 'How do blind boxes work?',
     a: 'Each blind box is a surprise: every series has 6–8 designs plus 1 secret rare. We cannot guarantee a specific design — that is the fun of it! Got a double? Trade with friends.' },
