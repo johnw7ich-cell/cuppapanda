@@ -310,9 +310,10 @@ function removeItem(name){cart=cart.filter(function(i){return i.name!==name;});s
 function renderCart(){
   document.getElementById('cartCount').textContent=cartQty();
   var box=document.getElementById('items');
+  var bb=document.getElementById('bogofBox');
   if(!cart.length){box.innerHTML='<div class="empty">Your cart is empty 🐼<br>Add something cute!</div>';}
   else{box.innerHTML=cart.map(function(i){return '<div class="crow"><div><div class="nm">'+i.name+'</div><div class="qty"><button type="button" onclick="changeQty(\''+i.name.replace(/'/g,"\\'")+'\',-1)">\u2212</button><span>'+i.qty+'</span><button type="button" onclick="changeQty(\''+i.name.replace(/'/g,"\\'")+'\',1)">+</button><button type="button" class="rm" onclick="removeItem(\''+i.name.replace(/'/g,"\\'")+'\')">remove</button></div></div><div class="pr">'+fmt(unit(i.usd)*i.qty)+'</div></div>';}).join('');}
-  var bb=document.getElementById('bogofBox');if(bb)box.appendChild(bb);
+  if(bb)box.appendChild(bb);
   var tot=cartTotalCur();document.getElementById('subTotal').textContent=fmt(tot);
   var shipFee=RATES[CUR].s+(10*RATES[CUR].r).toFixed(2);
   var allDigital=cart.length&&cart.every(function(i){return (typeof DIGITAL_SINGLE_NAMES!=='undefined'&&DIGITAL_SINGLE_NAMES[i.name])||(typeof NAME_TO_SKU!=='undefined'&&NAME_TO_SKU[i.name]&&NAME_TO_SKU[i.name].indexOf('digital-')===0)||i.name==='Pick 10 Bundle \u2014 10 digital downloads'||i.name==='Pick 5 Bundle \u2014 5 digital downloads';});
