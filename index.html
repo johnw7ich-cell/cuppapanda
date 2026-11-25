@@ -86,7 +86,7 @@ footer{padding:30px 18px 44px;text-align:center;color:var(--soft);font-size:13px
 #checkout{width:100%;border:none;background:var(--pink-deep);color:#fff;border-radius:999px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 5px 0 #c74e72}
 #checkout:disabled{opacity:.6;cursor:wait}
 #coForm input,#coForm select{width:100%;box-sizing:border-box;padding:10px 12px;border:2px solid #f3cfd8;border-radius:12px;margin-bottom:8px;font-size:14px;background:#fff}
-#bogofBox{padding:0 16px}
+#bogofBox{padding:0}
 #bogofBox label{display:block;font-size:13px;font-weight:600;margin:0 0 6px}
 #bogofBox select{width:100%;box-sizing:border-box;padding:10px 12px;border:2px solid #f3cfd8;border-radius:12px;margin-bottom:8px;font-size:14px;background:#fff}
 #payBanner{display:none;background:#e7f6ec;border:2px solid #4da877;color:#205c3a;border-radius:14px;padding:13px 16px;margin:14px auto 0;max-width:1060px;font-size:14.5px;line-height:1.55;text-align:center}
@@ -231,11 +231,10 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 <div id="overlay"></div>
 <aside id="drawer" aria-label="Shopping cart">
   <div class="dhead"><b>Your cart 🛒</b><button class="x" id="drawerClose" type="button" aria-label="Close cart">✕</button></div>
-  <div id="items"></div>
-  <div id="bogofBox">
+  <div id="items"><div id="bogofBox">
     <label for="coBogof" id="coBogofLabel" style="display:none">Your free BOGOF pick — buy 1 get 1 free</label>
     <select id="coBogof" style="display:none"><option value="">Choose your free download…</option></select>
-  </div>
+  </div></div>
   <div class="dfoot">
     <div class="tot"><span>Subtotal</span><span id="subTotal">£0.00</span></div>
     <p id="shipNote"></p>
@@ -313,6 +312,7 @@ function renderCart(){
   var box=document.getElementById('items');
   if(!cart.length){box.innerHTML='<div class="empty">Your cart is empty 🐼<br>Add something cute!</div>';}
   else{box.innerHTML=cart.map(function(i){return '<div class="crow"><div><div class="nm">'+i.name+'</div><div class="qty"><button type="button" onclick="changeQty(\''+i.name.replace(/'/g,"\\'")+'\',-1)">\u2212</button><span>'+i.qty+'</span><button type="button" onclick="changeQty(\''+i.name.replace(/'/g,"\\'")+'\',1)">+</button><button type="button" class="rm" onclick="removeItem(\''+i.name.replace(/'/g,"\\'")+'\')">remove</button></div></div><div class="pr">'+fmt(unit(i.usd)*i.qty)+'</div></div>';}).join('');}
+  var bb=document.getElementById('bogofBox');if(bb)box.appendChild(bb);
   var tot=cartTotalCur();document.getElementById('subTotal').textContent=fmt(tot);
   var shipFee=RATES[CUR].s+(10*RATES[CUR].r).toFixed(2);
   var allDigital=cart.length&&cart.every(function(i){return (typeof DIGITAL_SINGLE_NAMES!=='undefined'&&DIGITAL_SINGLE_NAMES[i.name])||(typeof NAME_TO_SKU!=='undefined'&&NAME_TO_SKU[i.name]&&NAME_TO_SKU[i.name].indexOf('digital-')===0)||i.name==='Pick 10 Bundle \u2014 10 digital downloads'||i.name==='Pick 5 Bundle \u2014 5 digital downloads';});
