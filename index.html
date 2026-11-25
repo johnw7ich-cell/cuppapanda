@@ -86,6 +86,9 @@ footer{padding:30px 18px 44px;text-align:center;color:var(--soft);font-size:13px
 #checkout{width:100%;border:none;background:var(--pink-deep);color:#fff;border-radius:999px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 5px 0 #c74e72}
 #checkout:disabled{opacity:.6;cursor:wait}
 #coForm input,#coForm select{width:100%;box-sizing:border-box;padding:10px 12px;border:2px solid #f3cfd8;border-radius:12px;margin-bottom:8px;font-size:14px;background:#fff}
+#bogofBox{padding:0 16px}
+#bogofBox label{display:block;font-size:13px;font-weight:600;margin:0 0 6px}
+#bogofBox select{width:100%;box-sizing:border-box;padding:10px 12px;border:2px solid #f3cfd8;border-radius:12px;margin-bottom:8px;font-size:14px;background:#fff}
 #payBanner{display:none;background:#e7f6ec;border:2px solid #4da877;color:#205c3a;border-radius:14px;padding:13px 16px;margin:14px auto 0;max-width:1060px;font-size:14.5px;line-height:1.55;text-align:center}
 #payBanner.show{display:block}
 #payBanner.warn{background:#fdf3f5;border-color:#f0c3d0;color:var(--ink)}
@@ -229,6 +232,10 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
 <aside id="drawer" aria-label="Shopping cart">
   <div class="dhead"><b>Your cart 🛒</b><button class="x" id="drawerClose" type="button" aria-label="Close cart">✕</button></div>
   <div id="items"></div>
+  <div id="bogofBox">
+    <label for="coBogof" id="coBogofLabel" style="display:none">Your free BOGOF pick — buy 1 get 1 free</label>
+    <select id="coBogof" style="display:none"><option value="">Choose your free download…</option></select>
+  </div>
   <div class="dfoot">
     <div class="tot"><span>Subtotal</span><span id="subTotal">£0.00</span></div>
     <p id="shipNote"></p>
@@ -263,8 +270,6 @@ footer a{color:var(--pink-deep);font-weight:700;text-decoration:none}
       </select>
       <input id="coPromo" type="text" placeholder="Promo code (e.g. PANDA15)">
       <input id="coReferral" type="text" placeholder="Referral code (e.g. PANDA-K7Q2M9) — optional">
-      <label for="coBogof" id="coBogofLabel" style="display:none">Your free BOGOF pick — buy 1 get 1 free</label>
-      <select id="coBogof" style="display:none"><option value="">Choose your free download…</option></select>
       <label for="coRefFree" id="coRefFreeLabel" style="display:none">Your extra free pick (referral +1)</label>
       <select id="coRefFree" style="display:none"><option value="">Choose your free download…</option></select>
       <p id="coMsg" role="status"></p>
