@@ -60,6 +60,7 @@ export async function sb(env, path, options = {}) {
 // Customer prices are $5.99 a single / $29.99 Pick 10 (usd_base 5.99 / 29.99 —
 // the charm rule makes them display as $5.99 / $29.99 in USD).
 export const DIGITAL_BUNDLE = 'digital-pick-10';
+export const DIGITAL_PICK5 = 'digital-pick-5';
 export const DIGITAL_SINGLES = [
   'digital-panda-desk-journal', 'digital-adhd-focus-planner', 'digital-calm-workbook',
   'digital-student-planner', 'digital-habit-tracker', 'digital-sticker-pack',

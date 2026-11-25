@@ -19,7 +19,7 @@
 // - Without the key, payment_mode stays 'email': the shop confirms by email and
 //   sends a payment link, exactly like the current site. A Stripe API failure
 //   also falls back to email mode — the saved order is never lost.
-import { sb, json, unitCents, isFreeShipCountry, FLAT_SHIPPING, PROMOS, orderNo, DIGITAL_BUNDLE, DIGITAL_SINGLES, isDigitalSingle } from './_lib.js';
+import { sb, json, unitCents, isFreeShipCountry, FLAT_SHIPPING, PROMOS, orderNo, DIGITAL_BUNDLE, DIGITAL_PICK5, DIGITAL_SINGLES, isDigitalSingle } from './_lib.js';
 
 const SHOP_URL = 'https://cuppapanda.com';
 
@@ -114,8 +114,8 @@ export async function onRequestPost({ request, env }) {
       const p = bySku[i.sku];
       if (!p) return json({ error: `Unknown or unavailable product: ${i.sku}` }, 400);
       const qty = Math.min(99, Math.floor(i.qty));
-      if (i.sku === DIGITAL_BUNDLE && qty !== 1) {
-        return json({ error: 'Pick 10 bundle: one bundle per order' }, 400);
+      if ((i.sku === DIGITAL_BUNDLE || i.sku === DIGITAL_PICK5) && qty !== 1) {
+        return json({ error: 'Bundle: one bundle per order' }, 400);
       }
       const unit = unitCents(Number(p.usd_base), currency, p.sku);
       subtotal += unit * qty;
@@ -136,10 +136,11 @@ export async function onRequestPost({ request, env }) {
     // The $0.99 test sticker never qualifies (standalone test product).
     const singleLines = lines.filter(l => isDigitalSingle(l.sku) && l.qty === 1 && l.sku !== 'digital-test-sticker-099');
     const hasBundle = lines.some(l => l.sku === DIGITAL_BUNDLE);
+    const hasPick5 = lines.some(l => l.sku === DIGITAL_PICK5);
     if (body.bogof_free) {
       const free = String(body.bogof_free).trim();
       if (!isDigitalSingle(free)) return json({ error: 'The free BOGOF pick must be one of the 10 digital downloads' }, 400);
-      if (hasBundle) return json({ error: 'Buy 1 get 1 free does not apply with the Pick 10 bundle' }, 400);
+      if (hasBundle || hasPick5) return json({ error: 'Buy 1 get 1 free does not apply with a bundle' }, 400);
       if (singleLines.length !== 1) return json({ error: 'Buy 1 get 1 free needs exactly one digital item in the cart' }, 400);
       addFree(free);
     }
@@ -149,6 +150,18 @@ export async function onRequestPost({ request, env }) {
       const picks = Array.isArray(body.pick10) ? body.pick10.map(s => String(s).trim()) : [];
       if (picks.length !== 10 || new Set(picks).size !== 10) {
         return json({ error: 'Pick 10 needs exactly 10 different digital downloads' }, 400);
+      }
+      for (const s of picks) {
+        if (!isDigitalSingle(s)) return json({ error: `Not a digital download: ${s}` }, 400);
+      }
+      picks.forEach(addFree);
+    }
+    // Pick 5: the bundle is in the cart; body.pick5 must be exactly 5
+    // distinct digital singles. Each becomes a $0 line on the order.
+    if (hasPick5) {
+      const picks = Array.isArray(body.pick5) ? body.pick5.map(s => String(s).trim()) : [];
+      if (picks.length !== 5 || new Set(picks).size !== 5) {
+        return json({ error: 'Pick 5 needs exactly 5 different digital downloads' }, 400);
       }
       for (const s of picks) {
         if (!isDigitalSingle(s)) return json({ error: `Not a digital download: ${s}` }, 400);
